@@ -65,6 +65,10 @@ public class loginController {
         log.warn("Validation errors in submit user answer request: {}", errors);
             return ResponseEntity.badRequest().body(errors);
         }
+ 
+
+        if(changeUsernameDTO.getUsernameOld().equals(changeUsernameDTO.getUsernameNew()))
+            throw new RuntimeException("The username can't be the before");
         
         try {
             
@@ -85,6 +89,16 @@ public class loginController {
     @PostMapping("/changePassword")
     public ResponseEntity<?> changePassword( @Valid @RequestBody ChangePasswordDTO changePasswordDTO, 
             BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage()));
+        log.warn("Validation errors in submit user answer request: {}", errors);
+            return ResponseEntity.badRequest().body(errors);
+        }
+
+        if(changePasswordDTO.getPasswordOld().equals(changePasswordDTO.getPasswordNew()))
+            throw new RuntimeException("The password can't be the before");
 
         try {
             
