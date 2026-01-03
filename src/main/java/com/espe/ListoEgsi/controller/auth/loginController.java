@@ -1,9 +1,12 @@
 package com.espe.ListoEgsi.controller.auth;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.core.AuthenticationException;
-
+import org.springframework.validation.BindingResult;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,12 +15,18 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.espe.ListoEgsi.domain.dto.auth.ChangePasswordDTO;
+import com.espe.ListoEgsi.domain.dto.auth.ChangeUsernameDTO;
 import com.espe.ListoEgsi.domain.dto.auth.LoginRequestDTO;
+import com.espe.ListoEgsi.domain.dto.setting.UserDTO;
 import com.espe.ListoEgsi.service.auth.LoginService;
 
+import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
 
 
+@Slf4j
 @RestController
 @RequestMapping("/login")
 public class loginController {
@@ -46,17 +55,50 @@ public class loginController {
     }
 
     @PostMapping("/changeUsername")
-    public String chageUsername(@RequestBody String entity) {
-        //TODO: process POST request
+    public ResponseEntity<?> chageUsername( @Valid @RequestBody ChangeUsernameDTO changeUsernameDTO, 
+            BindingResult bindingResult) {
+
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage()));
+        log.warn("Validation errors in submit user answer request: {}", errors);
+            return ResponseEntity.badRequest().body(errors);
+        }
         
-        return entity;
+        try {
+            
+            UserDTO changedUsername = loginService.changeUsername(changeUsernameDTO);
+            log.info("Successfully changing username: {}", changedUsername.getUsername());
+            Map<String,String> response = new HashMap<>();
+            response.put("Message:","Successfully changing username!");
+            response.put("Username:",changedUsername.getUsername());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            log.error("Error changing username: {}", changeUsernameDTO.getUsernameOld(), e);
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
 
     @PostMapping("/changePassword")
-    public String changePassword(@RequestBody String entity) {
-        //TODO: process POST request
-        
-        return entity;
+    public ResponseEntity<?> changePassword( @Valid @RequestBody ChangePasswordDTO changePasswordDTO, 
+            BindingResult bindingResult) {
+
+        try {
+            
+            loginService.changePassword(changePasswordDTO);
+            log.info("Successfully changing password: {}", changePasswordDTO.getUsername());
+            Map<String,String> response = new HashMap<>();
+            response.put("Message","Successfully changing password!");
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            log.error("Error changing password: {}", changePasswordDTO.getUsername(), e);
+            Map<String, String> error = new HashMap<>();
+            error.put("error", e.getMessage());
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
+        }
     }
     
     
