@@ -1,4 +1,4 @@
-package com.espe.ListoEgsi.service.process.impl;
+package com.espe.ListoEgsi.service.setting.impl;
 
 import java.util.List;
 import java.util.UUID;
@@ -14,7 +14,7 @@ import com.espe.ListoEgsi.domain.dto.setting.UserModDTO;
 import com.espe.ListoEgsi.domain.model.entity.setting.User;
 import com.espe.ListoEgsi.mapper.UserMapper;
 import com.espe.ListoEgsi.repository.UserRepository;
-import com.espe.ListoEgsi.service.process.UserService;
+import com.espe.ListoEgsi.service.setting.UserService;
 
 import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;

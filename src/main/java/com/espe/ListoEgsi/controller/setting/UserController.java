@@ -1,4 +1,4 @@
-package com.espe.ListoEgsi.controller.process;
+package com.espe.ListoEgsi.controller.setting;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.espe.ListoEgsi.domain.dto.setting.UserDTO;
 import com.espe.ListoEgsi.domain.dto.setting.UserModDTO;
-import com.espe.ListoEgsi.service.process.UserService;
+import com.espe.ListoEgsi.service.setting.UserService;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
@@ -145,7 +145,7 @@ public class UserController {
                 content = @Content(mediaType = "application/json"))
     })
     @PutMapping
-    public ResponseEntity<Object> modifyUser(
+    public ResponseEntity<?> modifyUser(
         @Valid @RequestBody UserModDTO userMod,
         BindingResult bindingResult){
             if (bindingResult.hasErrors()) {
@@ -174,7 +174,7 @@ public class UserController {
     @Operation(summary = "Delete user",
                description = "Soft deletes a user by setting is_deleted to true")
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "User deleted successfully"),
+        @ApiResponse(responseCode = "200", description = "User deleted successfully"),
         @ApiResponse(responseCode = "404", description = "User  not found",
                 content = @Content(mediaType = "application/json")),
         @ApiResponse(responseCode = "500", description = "Internal server error",
