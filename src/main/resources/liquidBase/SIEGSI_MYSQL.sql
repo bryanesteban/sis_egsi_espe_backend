@@ -396,3 +396,11 @@ alter table SCOPE add constraint FK_RELATIONSHIP_3 foreign key (ID_PROCESS)
 alter table SECURITY_POLICIES add constraint FK_RELATIONSHIP_7 foreign key (ID_PROCESS)
       references PROCESS (ID_PROCESS) on delete restrict on update restrict;
 
+/*==============================================================*/
+
+/**
+*  Initial Data for table USERS
+*/
+INSERT INTO users (id_user, name, lastname, ci, username, password, rol, is_deleted) VALUES (UUID(), 'Carlos', 'Daroma', '123215432', 'cDaroma', '$2a$10$50Go6KJ3Fxu5gS6dUecWpeq/qCW3K1N/XP4pRv4rT6iK6wSogDBFq', 'ADMIN', 0);
+
+
