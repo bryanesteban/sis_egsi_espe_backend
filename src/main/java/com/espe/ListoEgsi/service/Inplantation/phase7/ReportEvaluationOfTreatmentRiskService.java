@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.espe.ListoEgsi.domain.dto.Implantation.phase7.ReportEvaluationOfTreatmentRiskDTO;
-import com.espe.ListoEgsi.domain.model.entity.Inplantation.phase7.ReportEvaluationOfTreatmentRisk;
 
 public interface ReportEvaluationOfTreatmentRiskService {
 

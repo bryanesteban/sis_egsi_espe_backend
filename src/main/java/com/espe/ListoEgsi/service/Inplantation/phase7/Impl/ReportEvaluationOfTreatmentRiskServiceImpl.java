@@ -17,6 +17,7 @@ import com.espe.ListoEgsi.repository.Inplantation.phase1.ProcessRepository;
 import com.espe.ListoEgsi.repository.Inplantation.phase7.ReportEvaluationOfTreatmentRiskRepository;
 import com.espe.ListoEgsi.service.Inplantation.phase7.ReportEvaluationOfTreatmentRiskService;
 
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -64,12 +65,13 @@ public class ReportEvaluationOfTreatmentRiskServiceImpl implements ReportEvaluat
             throw new RuntimeException("Report Evaluation Of Treatment Risk don't exists with ID: " + ReportEvaluationRiskSubmit.getIdProcess());   
         }
         reportEvaluationRiskFound = reportEvaluationRiskMapper.toEntity(ReportEvaluationRiskSubmit);
+        reportEvaluationRiskFound.setProcess(foundProcess.get());
         ReportEvaluationOfTreatmentRisk reportEvaluationRiskSaved = reportEvaluationRiskRepository.save(reportEvaluationRiskFound);
         return reportEvaluationRiskMapper.toDTO(reportEvaluationRiskSaved);
              
     }
 
-    @Override
+    @Transactional
     public ReportEvaluationOfTreatmentRiskDTO updateReportEvaluationOfTreatmentRisk(
             ReportEvaluationOfTreatmentRiskDTO reportEvaluationRiskUpdate) {
         ReportEvaluationOfTreatmentRisk reportEvaluationRiskModified = new ReportEvaluationOfTreatmentRisk();
@@ -94,7 +96,7 @@ public class ReportEvaluationOfTreatmentRiskServiceImpl implements ReportEvaluat
 
         }
 
-    @Override
+    @Transactional
     public void deleteReportEvaluationOfTreatmentRisk(UUID idReportEvaluationRisk) {
         log.info("Deleting Report Evaluation Of Treatment Risk with ID: {}", idReportEvaluationRisk);
         ReportEvaluationOfTreatmentRisk reportEvaluationRiskExisting = reportEvaluationRiskRepository.findById(idReportEvaluationRisk)

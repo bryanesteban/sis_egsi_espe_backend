@@ -100,7 +100,7 @@ public class MethodologyEvaluationController {
         }
     }
 
-    @Operation(summary = "Get Methodology Evaluations by Process ID", 
+    @Operation(summary = "Create Methodology Evaluations by Process ID", 
                description = "Fetches all Methodology Evaluations associated with a specific Process ID.")
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Successfully retrieved Methodology Evaluations",

@@ -123,7 +123,6 @@ public class ReportEvaluationOfTreatmentRiskController {
                 });
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
             }
-
             try{
                 ReportEvaluationOfTreatmentRiskDTO reportEvaluationRiskSaved = reportEvaluationRiskService.saveReportEvaluationOfTreatmentRisk(reportEvaluationRiskSubmit);
                 log.info("Successfully saved Report Evaluation Of Treatment Risk with ID: {}",reportEvaluationRiskSaved.getIdReportTreatment() );
