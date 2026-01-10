@@ -81,7 +81,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<AnswerDTO> getAnswersByQuestion(UUID idQuestion) {
+    public List<AnswerDTO> getAnswersByQuestion(Integer idQuestion) {
         return answerRepository.findByQuestion_IdQuestion(idQuestion).stream()
                 .map(answerMapper::toDTO)
                 .collect(Collectors.toList());

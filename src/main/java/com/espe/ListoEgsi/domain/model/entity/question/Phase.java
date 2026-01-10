@@ -21,7 +21,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "PHASES")
+@Table(name = "PHASE_CUSTOM")
 public class Phase {
 
     @Id

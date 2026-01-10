@@ -31,23 +31,19 @@ public class ResponsibleSigning {
     @JoinColumn(name = "ID_PHASE", nullable = false)
     private Phase phase;
 
-    @NotBlank
     @Size(max = 100)
-    @Column(name = "NAME_RESPONSIBLE", nullable = false)
+    @Column(name = "NAME_RESPONSIBLE")
     private String nameResponsible;
 
-    @NotBlank
     @Size(max = 50)
-    @Column(name = "STATUS_SIGN", nullable = false)
+    @Column(name = "STATUS_SIGN")
     private String statusSign;
 
-    @NotBlank
     @Size(max = 20)
-    @Column(name = "CREATED_AT", nullable = false)
+    @Column(name = "CREATED_AT")
     private String createdAt;
 
-    @NotBlank
     @Size(max = 20)
-    @Column(name = "UPDATED_AT", nullable = false)
+    @Column(name = "UPDATED_AT")
     private String updatedAt;
 }

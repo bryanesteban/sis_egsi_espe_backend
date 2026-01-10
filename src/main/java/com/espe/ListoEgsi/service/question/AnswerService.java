@@ -19,5 +19,5 @@ public interface AnswerService {
     
     List<AnswerDTO> getAnswersByPhase(UUID idPhase);
     
-    List<AnswerDTO> getAnswersByQuestion(UUID idQuestion);
+    List<AnswerDTO> getAnswersByQuestion(Integer idQuestion);
 }

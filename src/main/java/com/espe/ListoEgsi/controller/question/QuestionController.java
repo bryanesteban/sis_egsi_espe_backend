@@ -3,7 +3,6 @@ package com.espe.ListoEgsi.controller.question;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -79,8 +78,8 @@ public class QuestionController {
         @ApiResponse(responseCode = "401", description = "No autenticado")
     })
     public ResponseEntity<?> updateQuestion(
-            @Parameter(description = "UUID de la pregunta a actualizar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable UUID id,
+            @Parameter(description = "ID de la pregunta a actualizar", required = true, example = "1")
+            @PathVariable Integer id,
             @Parameter(description = "Datos actualizados de la pregunta", required = true)
             @Valid @RequestBody QuestionDTO questionDTO,
             BindingResult bindingResult) {
@@ -108,8 +107,8 @@ public class QuestionController {
         @ApiResponse(responseCode = "401", description = "No autenticado")
     })
     public ResponseEntity<Void> deleteQuestion(
-            @Parameter(description = "UUID de la pregunta a eliminar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable UUID id) {
+            @Parameter(description = "ID de la pregunta a eliminar", required = true, example = "1")
+            @PathVariable Integer id) {
         questionService.deleteQuestion(id);
         return ResponseEntity.noContent().build();
     }
@@ -125,8 +124,8 @@ public class QuestionController {
         @ApiResponse(responseCode = "401", description = "No autenticado")
     })
     public ResponseEntity<QuestionDTO> getQuestionById(
-            @Parameter(description = "UUID de la pregunta", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable UUID id) {
+            @Parameter(description = "ID de la pregunta a buscar", required = true, example = "1")
+            @PathVariable Integer id) {
         QuestionDTO question = questionService.getQuestionById(id);
         return ResponseEntity.ok(question);
     }

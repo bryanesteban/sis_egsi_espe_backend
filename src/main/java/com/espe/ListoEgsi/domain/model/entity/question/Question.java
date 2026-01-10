@@ -1,10 +1,6 @@
 package com.espe.ListoEgsi.domain.model.entity.question;
 
 import java.util.List;
-import java.util.UUID;
-
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
@@ -22,10 +18,9 @@ import lombok.NoArgsConstructor;
 public class Question {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ID_QUESTION", nullable = false)
-    @JdbcTypeCode(SqlTypes.CHAR)
-    private UUID idQuestion;
+    private Integer idQuestion;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "ID_QUESTIONARY", nullable = false)

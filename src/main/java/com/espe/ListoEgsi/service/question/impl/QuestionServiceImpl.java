@@ -1,7 +1,6 @@
 package com.espe.ListoEgsi.service.question.impl;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -33,7 +32,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public QuestionDTO updateQuestion(UUID id, QuestionDTO questionDTO) {
+    public QuestionDTO updateQuestion(Integer id, QuestionDTO questionDTO) {
         Question existingQuestion = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found with id: " + id));
         
@@ -47,7 +46,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public void deleteQuestion(UUID id) {
+    public void deleteQuestion(Integer id) {
         if (!questionRepository.existsById(id)) {
             throw new ResourceNotFoundException("Question not found with id: " + id);
         }
@@ -56,7 +55,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional(readOnly = true)
-    public QuestionDTO getQuestionById(UUID id) {
+    public QuestionDTO getQuestionById(Integer id) {
         Question question = questionRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Question not found with id: " + id));
         return questionMapper.toDTO(question);

@@ -52,8 +52,7 @@ public class ProcessEgsi {
     @Column(name = "ACTIVE", nullable = false)
     private String active;
 
-    @NotBlank
     @Size(max = 10)
-    @Column(name = "CURRENT_PHASE", nullable = false)
+    @Column(name = "CURRENT_PHASE")
     private String currentPhase;
 }

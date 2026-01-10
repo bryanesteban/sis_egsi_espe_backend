@@ -1,7 +1,5 @@
 package com.espe.ListoEgsi.domain.dto.question;
 
-import java.util.UUID;
-
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class QuestionDTO {
 
-    private UUID idQuestion;
+    private Integer idQuestion;
 
     private String idQuestionary;
 

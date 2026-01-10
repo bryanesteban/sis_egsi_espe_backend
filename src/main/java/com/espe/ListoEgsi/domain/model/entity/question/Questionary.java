@@ -19,8 +19,8 @@ import lombok.NoArgsConstructor;
 public class Questionary {
 
     @Id
-    @Size(max = 36)
-    @Column(name = "ID_QUESTIONARY", nullable = false)
+    @Size(max = 20)
+    @Column(name = "ID_QUESTIONARY", nullable = false, length = 20)
     private String idQuestionary;
 
     @NotBlank

@@ -172,8 +172,8 @@ public class AnswerController {
         @ApiResponse(responseCode = "401", description = "No autenticado")
     })
     public ResponseEntity<List<AnswerDTO>> getAnswersByQuestion(
-            @Parameter(description = "UUID de la pregunta", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable UUID idQuestion) {
+            @Parameter(description = "ID de la pregunta", required = true, example = "1")
+            @PathVariable Integer idQuestion) {
         List<AnswerDTO> answers = answerService.getAnswersByQuestion(idQuestion);
         return ResponseEntity.ok(answers);
     }

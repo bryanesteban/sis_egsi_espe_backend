@@ -16,7 +16,7 @@ public class AnswerDTO {
 
     private UUID idAnswer;
 
-    private UUID idQuestion;
+    private Integer idQuestion;
 
     private UUID idPhase;
 

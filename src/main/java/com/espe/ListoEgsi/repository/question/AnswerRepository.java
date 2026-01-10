@@ -13,7 +13,7 @@ public interface AnswerRepository extends JpaRepository<Answer, UUID> {
     
     List<Answer> findByPhase_IdPhase(UUID idPhase);
     
-    List<Answer> findByQuestion_IdQuestion(UUID idQuestion);
+    List<Answer> findByQuestion_IdQuestion(Integer idQuestion);
     
-    List<Answer> findByPhase_IdPhaseAndQuestion_IdQuestion(UUID idPhase, UUID idQuestion);
+    List<Answer> findByPhase_IdPhaseAndQuestion_IdQuestion(UUID idPhase, Integer idQuestion);
 }
