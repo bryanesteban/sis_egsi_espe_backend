@@ -51,6 +51,20 @@ La colección incluye tests automáticos que se ejecutan después de cada reques
 
 ## 🔍 Cómo Ver los Headers de Seguridad en Postman
 
+### ⚠️ Importante: Request vs Response Headers
+
+**Headers que TÚ envías (Request Headers):**
+- ✅ `Content-Type: application/json` (ya incluido automáticamente)
+- ✅ `Authorization: Bearer {{jwt_token}}` (en endpoints protegidos)
+
+**Headers que el SERVIDOR envía (Response Headers - Headers de Seguridad):**
+- ✅ `X-XSS-Protection: 1; mode=block`
+- ✅ `X-Frame-Options: DENY`
+- ✅ `Content-Security-Policy: ...`
+- ✅ `Referrer-Policy: strict-origin-when-cross-origin`
+
+Los headers de seguridad son **Response Headers** - el servidor los envía automáticamente en cada respuesta. **No necesitas agregarlos tú en el request**.
+
 ### Método 1: Pestaña Headers (Recomendado)
 1. Ejecuta cualquier endpoint (por ejemplo: Login)
 2. Click en **Send**
@@ -85,25 +99,36 @@ La colección incluye tests automáticos que se ejecutan después de cada reques
 ### 📸 Ubicación Visual en Postman
 
 ```
+REQUEST (lo que tú envías):
 ┌─────────────────────────────────────────────────┐
 │  POST http://localhost:9090/login    [Send]    │
 ├─────────────────────────────────────────────────┤
-│  Body   │  Params  │  Auth  │  Headers         │
-│  ...request body...                             │
+│  Headers:                                       │
+│    Content-Type: application/json               │ ← Solo esto
+│                                                 │
+│  Body (raw - JSON):                             │
+│    {"username": "cDaroma", "password": "..."}   │
 └─────────────────────────────────────────────────┘
+
               ↓ Después de Send ↓
+
+RESPONSE (lo que el servidor envía):
 ┌─────────────────────────────────────────────────┐
 │  Status: 200 OK   Time: 245ms   Size: 185 B    │
 ├─────────────────────────────────────────────────┤
 │  Body │ Cookies │ Headers │ Test Results       │ ← Click aquí
 │  ────────────────────────────                   │
-│  X-XSS-Protection: 1; mode=block                │
-│  X-Frame-Options: DENY                          │
+│  X-XSS-Protection: 1; mode=block                │ ← Headers de seguridad
+│  X-Frame-Options: DENY                          │    (automáticos del servidor)
 │  Content-Security-Policy: default-src 'self'... │
 │  Referrer-Policy: strict-origin-when-cross...   │
 │  Cache-Control: no-cache, no-store...           │
 └─────────────────────────────────────────────────┘
 ```
+
+**Resumen:**
+- Request Headers (arriba) = Lo que TÚ configuras
+- Response Headers (abajo) = Lo que el SERVIDOR devuelve automáticamente
 
 ## 🚀 Endpoints Incluidos
 
