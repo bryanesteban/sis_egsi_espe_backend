@@ -171,6 +171,17 @@ Para desarrollo, es mejor ejecutar Spring Boot directamente sin Docker:
 4. **Limitar recursos** de contenedores
 5. **Usar imágenes específicas** (no `latest`)
 6. **Backup automático** de base de datos
+7. **Revisar headers de seguridad** (ver [SECURITY-HEADERS.md](SECURITY-HEADERS.md))
+
+### Headers de Seguridad Implementados
+
+✅ **X-XSS-Protection**: Protección contra Cross-Site Scripting  
+✅ **X-Frame-Options**: Prevención de Clickjacking  
+✅ **Content-Security-Policy**: Política de seguridad de contenido  
+✅ **Referrer-Policy**: Control de información del referrer  
+✅ **Cache-Control**: Gestión de caché para datos sensibles
+
+**Documentación completa**: Ver [SECURITY-HEADERS.md](SECURITY-HEADERS.md)
 
 ### Ejemplo de archivo `.env`:
 

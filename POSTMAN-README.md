@@ -9,12 +9,101 @@
 
 ## 🔑 Credenciales de Prueba
 
-**Usuario Administrador (Incluido en la colección):**
+**Usuario Administrador (Ya configurado en la colección):**
 - **Username**: `cDaroma`
 - **Password**: `password`
 - **Rol**: `ADMIN`
 
-Las variables de la colección ya incluyen estas credenciales.
+✅ **Las variables están preconfiguradas**. Solo necesitas hacer clic en **Send** en cada endpoint.
+
+## ⚡ Uso Rápido
+
+1. Importa la colección en Postman
+2. Ejecuta el endpoint **"1. Login"** → Click en **Send**
+3. El token se guarda automáticamente
+4. Ejecuta los demás endpoints sin modificar nada
+
+**No necesitas cambiar ningún valor en los requests**, las credenciales ya están configuradas con las variables `{{username}}` y `{{password}}`.
+
+## ✅ Tests Automáticos
+
+La colección incluye tests automáticos que se ejecutan después de cada request:
+
+### Tests en Login:
+- ✅ Validación de status code 200
+- ✅ Verificación de token JWT en respuesta
+- ✅ Verificación de headers de seguridad HTTP:
+  - `X-XSS-Protection`
+  - `X-Frame-Options`
+  - `Content-Security-Policy`
+- ✅ Guardado automático del token
+
+### Tests en Refresh Token:
+- ✅ Validación de status code 200
+- ✅ Verificación de nuevo token
+- ✅ Actualización automática del token
+- ✅ Verificación de headers de seguridad
+
+### Revisar Resultados de Tests:
+1. Ejecuta cualquier endpoint
+2. Ve a la pestaña **Test Results** en Postman
+3. Verás todos los tests ejecutados con ✓ o ✗
+
+## 🔍 Cómo Ver los Headers de Seguridad en Postman
+
+### Método 1: Pestaña Headers (Recomendado)
+1. Ejecuta cualquier endpoint (por ejemplo: Login)
+2. Click en **Send**
+3. En la sección de respuesta (abajo), busca la pestaña **Headers**
+4. Verás todos los headers HTTP que el servidor envió:
+   ```
+   X-XSS-Protection: 1; mode=block
+   X-Frame-Options: DENY
+   Content-Security-Policy: default-src 'self'; script-src...
+   Referrer-Policy: strict-origin-when-cross-origin
+   Cache-Control: no-cache, no-store, max-age=0, must-revalidate
+   ```
+
+### Método 2: Console de Postman
+1. Abre la consola de Postman: **View → Show Postman Console** (o `Alt+Ctrl+C`)
+2. Ejecuta cualquier endpoint
+3. En la consola verás:
+   - Request headers enviados
+   - Response headers recibidos
+   - Logs de los tests ejecutados
+
+### Método 3: Test Results
+1. Después de ejecutar un endpoint
+2. Ve a la pestaña **Test Results**
+3. Los tests de headers te confirman que están presentes:
+   ```
+   ✓ Response tiene X-XSS-Protection header
+   ✓ Response tiene X-Frame-Options header
+   ✓ Response tiene Content-Security-Policy header
+   ```
+
+### 📸 Ubicación Visual en Postman
+
+```
+┌─────────────────────────────────────────────────┐
+│  POST http://localhost:9090/login    [Send]    │
+├─────────────────────────────────────────────────┤
+│  Body   │  Params  │  Auth  │  Headers         │
+│  ...request body...                             │
+└─────────────────────────────────────────────────┘
+              ↓ Después de Send ↓
+┌─────────────────────────────────────────────────┐
+│  Status: 200 OK   Time: 245ms   Size: 185 B    │
+├─────────────────────────────────────────────────┤
+│  Body │ Cookies │ Headers │ Test Results       │ ← Click aquí
+│  ────────────────────────────                   │
+│  X-XSS-Protection: 1; mode=block                │
+│  X-Frame-Options: DENY                          │
+│  Content-Security-Policy: default-src 'self'... │
+│  Referrer-Policy: strict-origin-when-cross...   │
+│  Cache-Control: no-cache, no-store...           │
+└─────────────────────────────────────────────────┘
+```
 
 ## 🚀 Endpoints Incluidos
 
@@ -103,9 +192,20 @@ La colección incluye estas variables configuradas automáticamente:
 | Variable | Valor por defecto | Descripción |
 |----------|-------------------|-------------|
 | `base_url` | `http://localhost:9090` | URL base del API |
-| `jwt_token` | (vacío) | Token JWT - se guarda automáticamente |
-| `username` | (vacío) | Usuario autenticado |
-| `rolename` | (vacío) | Rol del usuario |
+| `username` | `cDaroma` | Usuario administrador |
+| `password` | `password` | Contraseña del usuario |
+| `jwt_token` | (se guarda automáticamente) | Token JWT después del login |
+| `rolename` | (se guarda automáticamente) | Rol del usuario después del login |
+
+### Cómo Editar Variables (Opcional)
+
+Si necesitas usar otras credenciales:
+
+1. Click derecho en la colección "SIEGSI - Autenticación"
+2. Click en **"Edit"**
+3. Ve a la pestaña **"Variables"**
+4. Edita `username` y `password` con tus credenciales
+5. **Save** y listo
 
 ## 📝 Flujo de Uso Recomendado
 
@@ -171,8 +271,34 @@ No necesitas configurar nada manualmente - solo ejecuta el Login y los demás en
 ## 💡 Tips
 
 1. **Ver el token actual**: Mira la consola de Postman después de hacer Login o Refresh
-2. **Cambiar ambiente**: Puedes crear diferentes ambientes (Dev, Prod) con diferentes URLs
-3. **Depuración**: La consola de Postman muestra los scripts ejecutados y los valores guardados
+2. **Ver headers de seguridad**: Click en la pestaña **Headers** en la respuesta
+3. **Cambiar ambiente**: Puedes crear diferentes ambientes (Dev, Prod) con diferentes URLs
+4. **Depuración**: La consola de Postman muestra los scripts ejecutados y los valores guardados
+5. **Ejecutar todos los tests**: Click en la colección → Click en **Run** para ejecutar todos los endpoints secuencialmente
+
+## 📺 Guía Paso a Paso
+
+### Primer Uso:
+1. **Importar colección** → Archivo JSON
+2. **Abrir endpoint "1. Login"**
+3. **Click en Send** (sin modificar nada)
+4. **Ver respuesta en Body** → Verás el token
+5. **Click en Headers** (al lado de Body) → Verás los headers de seguridad
+6. **Click en Test Results** → Verás tests pasando ✓
+
+### Ver Headers de Seguridad:
+```
+Pasos detallados:
+1. Send en cualquier endpoint
+2. Busca las pestañas debajo del botón Send
+3. Click en "Headers" (al lado de "Body")
+4. Scroll down para ver todos los headers
+5. Busca:
+   - X-XSS-Protection
+   - X-Frame-Options
+   - Content-Security-Policy
+   - Referrer-Policy
+```
 
 ## ⚠️ Notas
 

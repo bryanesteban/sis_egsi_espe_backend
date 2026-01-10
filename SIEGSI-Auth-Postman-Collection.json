@@ -2,7 +2,7 @@
 	"info": {
 		"_postman_id": "siegsi-auth-collection",
 		"name": "SIEGSI - Autenticación",
-		"description": "Colección de Postman para probar los endpoints de autenticación del sistema SIEGSI.\n\n## Instrucciones de uso:\n1. Ejecuta el endpoint de **Login** primero\n2. El token se guardará automáticamente en la variable `jwt_token`\n3. Los demás endpoints usarán ese token automáticamente\n4. Para renovar el token, usa el endpoint **Refresh Token**",
+		"description": "Colección de Postman para probar los endpoints de autenticación del sistema SIEGSI.\n\n## 🔐 Credenciales de Prueba\n- **Username**: cDaroma\n- **Password**: password\n- **Rol**: ADMIN\n\n## 📋 Instrucciones de uso:\n1. Ejecuta el endpoint de **Login** primero\n2. El token se guardará automáticamente en la variable `jwt_token`\n3. Los demás endpoints usarán ese token automáticamente\n4. Para renovar el token, usa el endpoint **Refresh Token**\n\n## ✅ Tests Automáticos Incluidos:\n- Validación de status codes\n- Verificación de headers de seguridad HTTP\n- Validación de estructura de respuestas\n- Guardado automático de tokens\n\n## 🔒 Headers de Seguridad Verificados:\n- X-XSS-Protection\n- X-Frame-Options\n- Content-Security-Policy\n- Referrer-Policy\n- Cache-Control",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
 	"item": [
@@ -22,6 +22,28 @@
 							"    console.log(\"✅ Token guardado exitosamente\");",
 							"    console.log(\"Usuario: \" + jsonData.username);",
 							"    console.log(\"Rol: \" + jsonData.rolename);",
+							"",
+							"    // Tests de seguridad",
+							"    pm.test(\"Response tiene X-XSS-Protection header\", function () {",
+							"        pm.response.to.have.header(\"X-XSS-Protection\");",
+							"    });",
+							"",
+							"    pm.test(\"Response tiene X-Frame-Options header\", function () {",
+							"        pm.response.to.have.header(\"X-Frame-Options\");",
+							"    });",
+							"",
+							"    pm.test(\"Response tiene Content-Security-Policy header\", function () {",
+							"        pm.response.to.have.header(\"Content-Security-Policy\");",
+							"    });",
+							"",
+							"    pm.test(\"Status code es 200\", function () {",
+							"        pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"Response contiene token JWT\", function () {",
+							"        pm.expect(jsonData.token).to.be.a('string');",
+							"        pm.expect(jsonData.token.length).to.be.greaterThan(0);",
+							"    });",
 							"}"
 						],
 						"type": "text/javascript"
@@ -38,7 +60,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+					"raw": "{\n  \"username\": \"{{username}}\",\n  \"password\": \"{{password}}\"\n}"
 				},
 				"url": {
 					"raw": "{{base_url}}/login",
@@ -64,7 +86,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+							"raw": "{\n  \"username\": \"cDaroma\",\n  \"password\": \"password\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9090/login",
@@ -85,9 +107,25 @@
 						{
 							"key": "Content-Type",
 							"value": "application/json"
+						},
+						{
+							"key": "X-XSS-Protection",
+							"value": "1; mode=block"
+						},
+						{
+							"key": "X-Frame-Options",
+							"value": "DENY"
+						},
+						{
+							"key": "Content-Security-Policy",
+							"value": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;"
+						},
+						{
+							"key": "Referrer-Policy",
+							"value": "strict-origin-when-cross-origin"
 						}
 					],
-					"body": "{\n  \"username\": \"admin\",\n  \"rolename\": \"ADMIN\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYwOTQ1OTIwMCwiZXhwIjoxNjA5NTQ1NjAwfQ.abc123...\"\n}"
+					"body": "{\n  \"username\": \"cDaroma\",\n  \"rolename\": \"ADMIN\",\n  \"token\": \"eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjRGFyb21hIiwiaWF0IjoxNzY4MDEyNDk3LCJleHAiOjE3NjgwMTYwOTd9.ToigVllE88YKGdHobsoJjU-eYz4XcBSR8ZuLlICwCK8\"\n}"
 				},
 				{
 					"name": "Credenciales Inválidas",
@@ -101,7 +139,7 @@
 						],
 						"body": {
 							"mode": "raw",
-							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"wrong_password\"\n}"
+							"raw": "{\n  \"username\": \"cDaroma\",\n  \"password\": \"wrong_password\"\n}"
 						},
 						"url": {
 							"raw": "http://localhost:9090/login",
@@ -141,6 +179,20 @@
 							"    pm.environment.set(\"jwt_token\", jsonData.token);",
 							"    console.log(\"✅ Token renovado exitosamente\");",
 							"    console.log(\"Usuario: \" + jsonData.username);",
+							"",
+							"    // Tests de validación",
+							"    pm.test(\"Status code es 200\", function () {",
+							"        pm.response.to.have.status(200);",
+							"    });",
+							"",
+							"    pm.test(\"Response contiene nuevo token\", function () {",
+							"        pm.expect(jsonData.token).to.be.a('string');",
+							"    });",
+							"",
+							"    pm.test(\"Headers de seguridad presentes\", function () {",
+							"        pm.response.to.have.header(\"X-Frame-Options\");",
+							"        pm.response.to.have.header(\"Content-Security-Policy\");",
+							"    });",
 							"}"
 						],
 						"type": "text/javascript"
@@ -285,7 +337,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"usernameOld\": \"admin\",\n  \"usernameNew\": \"adminNew\",\n  \"password\": \"password123\"\n}"
+					"raw": "{\n  \"usernameOld\": \"{{username}}\",\n  \"usernameNew\": \"cDaromaNew\",\n  \"password\": \"{{password}}\"\n}"
 				},
 				"url": {
 					"raw": "{{base_url}}/login/changeUsername",
@@ -323,7 +375,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"username\": \"admin\",\n  \"passwordOld\": \"password123\",\n  \"passwordNew\": \"newPassword456\"\n}"
+					"raw": "{\n  \"username\": \"{{username}}\",\n  \"passwordOld\": \"{{password}}\",\n  \"passwordNew\": \"newPassword456\"\n}"
 				},
 				"url": {
 					"raw": "{{base_url}}/login/changePassword",

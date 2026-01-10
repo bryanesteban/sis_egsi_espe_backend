@@ -46,6 +46,21 @@ public class SpringSecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(csrf -> csrf.disable())
             
+            // Headers de seguridad
+            .headers(headers -> headers
+                .contentSecurityPolicy(csp -> csp
+                    .policyDirectives("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:;")
+                )
+                .frameOptions(frame -> frame.deny())
+                .xssProtection(xss -> xss
+                    .headerValue(org.springframework.security.web.header.writers.XXssProtectionHeaderWriter.HeaderValue.ENABLED_MODE_BLOCK)
+                )
+                .contentTypeOptions(contentType -> contentType.disable())
+                .referrerPolicy(referrer -> referrer
+                    .policy(org.springframework.security.web.header.writers.ReferrerPolicyHeaderWriter.ReferrerPolicy.STRICT_ORIGIN_WHEN_CROSS_ORIGIN)
+                )
+            )
+            
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             // 2. Autorizar las rutas
             .authorizeHttpRequests(auth -> auth
@@ -64,7 +79,7 @@ public class SpringSecurityConfig {
                 response.getWriter().write("{\"error\": \"No autorizado\", \"mensaje\": \"Token JWT no encontrado o inválido\"}");
             })
         )
-            // 3. Permitir Basic Auth por si lo necesitas luego
+            // 3. Agregar filtro JWT
             .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 
         springSecurityConf.info("Configuración de seguridad cargada exitosamente.");
