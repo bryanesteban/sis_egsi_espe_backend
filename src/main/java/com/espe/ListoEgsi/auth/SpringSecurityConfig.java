@@ -50,6 +50,8 @@ public class SpringSecurityConfig {
             // 2. Autorizar las rutas
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers(HttpMethod.POST,"/login").permitAll()
+                .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
+                .requestMatchers("/actuator/**").authenticated()
                 .requestMatchers("/users/**").authenticated()
                 .anyRequest().authenticated()            
             )

@@ -1,0 +1,84 @@
+version: '3.8'
+
+services:
+  # Servicio de Base de Datos MySQL
+  mysql-db:
+    image: mysql:8.0
+    container_name: siegsi-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: db_egsi
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: sa12345
+      TZ: America/Guayaquil
+    ports:
+      - "3307:3306"  # Puerto 3307 en host para evitar conflictos con MySQL local
+    volumes:
+      # Persistencia de datos
+      - mysql_data:/var/lib/mysql
+      # Script de inicialización (se ejecuta solo la primera vez)
+      - ./src/main/resources/liquidBase/SIEGSI_MYSQL.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - siegsi-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "usuario", "-psa12345"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    command: --default-authentication-plugin=mysql_native_password
+
+  # Servicio del Backend Spring Boot
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: siegsi-backend
+    restart: unless-stopped
+    depends_on:
+      mysql-db:
+        condition: service_healthy
+    environment:
+      # Variables de entorno para la base de datos
+      DB_HOST: mysql-db
+      DB_PORT: 3306
+      DB_NAME: db_egsi
+      DB_USERNAME: usuario
+      DB_PASSWORD: sa12345
+      
+      # Perfil de Spring
+      SPRING_PROFILES_ACTIVE: docker
+      
+      # CORS
+      CORS_ALLOWED_ORIGINS: http://localhost:3000,http://localhost:9090
+      
+      # JWT (cambiar en producción)
+      JWT_SECRET: TuClaveSecretaMuyLargaParaLaTesisDeBryan2025ProductionKey
+      JWT_EXPIRATION: 86400000
+      
+      # Java Options
+      JAVA_OPTS: -Xmx512m -Xms256m
+      
+      # Zona horaria
+      TZ: America/Guayaquil
+    ports:
+      - "9090:9090"
+    networks:
+      - siegsi-network
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/actuator/health", "||", "exit", "1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+# Red personalizada
+networks:
+  siegsi-network:
+    driver: bridge
+
+# Volumen para persistencia de datos MySQL
+volumes:
+  mysql_data:
+    driver: local
