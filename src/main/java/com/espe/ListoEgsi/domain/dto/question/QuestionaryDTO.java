@@ -1,6 +1,4 @@
-package com.espe.ListoEgsi.domain.dto.Implantation.phase1;
-
-import java.util.UUID;
+package com.espe.ListoEgsi.domain.dto.question;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -13,32 +11,20 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProcessEgsiDTO {
+public class QuestionaryDTO {
 
-    private UUID idProcess;
+    @Size(max = 36)
+    private String idQuestionary;
 
     @NotBlank
     @Size(max = 50)
-    private String name;
+    private String questionaryName;
 
     @NotBlank
     @Size(max = 1000)
     private String description;
 
     @NotBlank
-    @Size(max = 20)
-    private String dateBegin;
-
-    @NotBlank
-    @Size(max = 20)
-    private String dateEnd;
-
-    @NotBlank
-    @Size(max = 20)
-    private String active;
-
-    @NotBlank
     @Size(max = 10)
-    private String currentPhase;
+    private String phase;
 }
-

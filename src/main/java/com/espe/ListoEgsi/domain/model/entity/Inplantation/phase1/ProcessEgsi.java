@@ -28,14 +28,14 @@ public class ProcessEgsi {
     private UUID idProcess;
 
     @NotBlank
-    @Size(max = 200)
-    @Column(name = "RELATED_PROGRAM", nullable = false)
-    private String relatedProgram;
+    @Size(max = 50)
+    @Column(name = "NAME", nullable = false)
+    private String name;
 
     @NotBlank
-    @Size(max = 200)
-    @Column(name = "PROJECT_LEADER", nullable = false)
-    private String projectLeader;
+    @Size(max = 1000)
+    @Column(name = "DESCRIPTION", nullable = false)
+    private String description;
 
     @NotBlank
     @Size(max = 20)
@@ -48,37 +48,12 @@ public class ProcessEgsi {
     private String dateEnd;
 
     @NotBlank
-    @Size(max = 1000)
-    @Column(name = "PROBLEM", nullable = false)
-    private String problem;
+    @Size(max = 20)
+    @Column(name = "ACTIVE", nullable = false)
+    private String active;
 
     @NotBlank
-    @Size(max = 1000)
-    @Column(name = "JUSTIFICATION", nullable = false)
-    private String justification;
-
-    @NotBlank
-    @Size(max = 1000)
-    @Column(name = "PROJECT_DESCRIPTION", nullable = false)
-    private String projectDescription;
-
-    @NotBlank
-    @Size(max = 500)
-    @Column(name = "BENEFITS", nullable = false)
-    private String benefits;
-
-    @NotBlank
-    @Size(max = 500)
-    @Column(name = "GENERAL_OBJECTIVE", nullable = false)
-    private String generalObjective;
-
-    @NotBlank
-    @Size(max = 500)
-    @Column(name = "BENEFICIARIES", nullable = false)
-    private String beneficiaries;
-
-    @NotBlank
-    @Size(max = 200)
-    @Column(name = "IMPLETENTATION_PERIOD", nullable = false)
-    private String implementationPeriod;
+    @Size(max = 10)
+    @Column(name = "CURRENT_PHASE", nullable = false)
+    private String currentPhase;
 }

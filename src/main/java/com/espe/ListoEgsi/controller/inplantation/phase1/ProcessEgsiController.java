@@ -32,7 +32,7 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Tag(name = "Process Egsi", description = "API for managing processes of egsi") 
+@Tag(name = "Procesos EGSI", description = "API para gestión de procesos de implementación EGSI") 
 @RequestMapping("/processEgsi")
 @RestController
 public class ProcessEgsiController {
@@ -47,15 +47,17 @@ public class ProcessEgsiController {
 
 
 
-    @Operation(summary = "get all processes",
-               description = "Retrieve a list of all processes")
+    @Operation(
+        summary = "Obtener todos los procesos",
+        description = "Recupera una lista completa de todos los procesos de implementación EGSI registrados en el sistema"
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Successfully retrieved list of processes",
+        @ApiResponse(responseCode = "200", description = "Lista de procesos recuperada exitosamente",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ProcessEgsiDTO.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
+        @ApiResponse(responseCode = "401", description = "No autenticado",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @GetMapping
@@ -76,19 +78,23 @@ public class ProcessEgsiController {
     }
 
 
-    @Operation(summary = "Save process of egsi",
-               description = "Save a new process of egsi ")
+    @Operation(
+        summary = "Crear nuevo proceso EGSI",
+        description = "Registra un nuevo proceso de implementación EGSI con nombre, descripción, fechas y estado inicial"
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Process saved successfully",
+        @ApiResponse(responseCode = "201", description = "Proceso creado exitosamente",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ProcessEgsiDTO.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos - Verifique campos requeridos",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @PostMapping
     public ResponseEntity<Object> saveNewProcess(
+        @Parameter(description = "Datos del nuevo proceso EGSI", required = true)
         @Valid @RequestBody ProcessEgsiDTO processSave,
         BindingResult bindingResult) {
 
@@ -113,20 +119,23 @@ public class ProcessEgsiController {
         }
     }
 
-    @Operation(summary = "find process by idProcess",
-               description = "find process by idProcess ")
+    @Operation(
+        summary = "Buscar proceso por ID",
+        description = "Recupera los detalles completos de un proceso EGSI específico por su identificador único (UUID)"
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Process found successfully",
+        @ApiResponse(responseCode = "200", description = "Proceso encontrado exitosamente",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ProcessEgsiDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Process not found",
+        @ApiResponse(responseCode = "404", description = "Proceso no encontrado",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @GetMapping("find/{idProcess}")
     public ResponseEntity<?> getProcessEgsiById(
-        @Parameter(description = "ID of the process to retrieve", required = true)
+        @Parameter(description = "UUID del proceso a buscar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
         @PathVariable UUID idProcess) {
         try {
 
@@ -142,21 +151,25 @@ public class ProcessEgsiController {
         }
     }
 
-    @Operation(summary = "update process",
-               description = "Update an existing process ")
+    @Operation(
+        summary = "Actualizar proceso existente",
+        description = "Modifica los datos de un proceso EGSI existente incluyendo nombre, descripción, fechas y estado"
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Process updated successfully",
+        @ApiResponse(responseCode = "200", description = "Proceso actualizado exitosamente",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = ProcessEgsiDTO.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "404", description = "Process not found",
+        @ApiResponse(responseCode = "404", description = "Proceso no encontrado",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @PutMapping
     public ResponseEntity<?> updateProcess(
+        @Parameter(description = "Datos actualizados del proceso EGSI", required = true)
         @Valid @RequestBody ProcessEgsiDTO processUpdate,
         BindingResult bindingResult) {
 
@@ -181,20 +194,21 @@ public class ProcessEgsiController {
         }
     }
 
-    @Operation(summary = "Delete process",
-               description = "Soft delete an existing process by ID")
+    @Operation(
+        summary = "Eliminar proceso (soft delete)",
+        description = "Elimina lógicamente un proceso EGSI por su ID. El proceso no se elimina físicamente de la base de datos."
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Process deleted successfully",
-                content = @Content(mediaType = "application/json",
-                        schema = @Schema(implementation = ProcessEgsiDTO.class))),
-        @ApiResponse(responseCode = "404", description = "Process not found",
+        @ApiResponse(responseCode = "204", description = "Proceso eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Proceso no encontrado",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/delete/{idProcess}")
     public ResponseEntity<?> deleteProcess(
-        @Parameter(description = "ID of the process to delete", required = true)
+        @Parameter(description = "UUID del proceso a eliminar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
         @PathVariable UUID idProcess) {
             log.info("Request to delete process with ID: {}", idProcess);
         try {

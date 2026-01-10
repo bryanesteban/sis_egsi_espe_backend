@@ -36,7 +36,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 
 @Slf4j
-@Tag(name = "User", description = "API for managing user")
+@Tag(name = "Usuarios", description = "API para gestión de usuarios del sistema EGSI")
 @RequestMapping("/users")
 @RestController
 public class UserController {
@@ -50,6 +50,15 @@ public class UserController {
      * @return List of all active users
      */
     @GetMapping
+    @Operation(
+        summary = "Obtener todos los usuarios",
+        description = "Recupera una lista completa de todos los usuarios activos registrados en el sistema"
+    )
+    @ApiResponses(value = {
+        @ApiResponse(responseCode = "200", description = "Lista de usuarios recuperada exitosamente"),
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor")
+    })
     public ResponseEntity<?> getAllUsers() {
         try {
             List<UserDTO> users = userService.findAllUsers();
@@ -67,19 +76,23 @@ public class UserController {
     }
 
 
-    @Operation(summary = "Save user",
-               description = "Save a new user ")
+    @Operation(
+        summary = "Crear nuevo usuario",
+        description = "Registra un nuevo usuario en el sistema EGSI con cédula, nombre, email, rol y credenciales"
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "User saved successfully",
+        @ApiResponse(responseCode = "201", description = "Usuario creado exitosamente",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = UserDTO.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos - Verifique campos requeridos",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @PostMapping
     public ResponseEntity<Object> saveNewUser(
+        @Parameter(description = "Datos del nuevo usuario", required = true)
         @Valid @RequestBody UserDTO userSave, 
             BindingResult bindingResult) {
         if (bindingResult.hasErrors()) {
@@ -104,20 +117,23 @@ public class UserController {
         }
     }
     
-    @Operation(summary = "find user",
-               description = "find user by id ")
+    @Operation(
+        summary = "Buscar usuario por ID",
+        description = "Recupera los detalles completos de un usuario específico por su identificador único (UUID)"
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "User found successfully",
+        @ApiResponse(responseCode = "200", description = "Usuario encontrado exitosamente",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = UserDTO.class))),
-        @ApiResponse(responseCode = "404", description = "User not found",
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @GetMapping("find/{idUser}")
-    public ResponseEntity<?> getUserById( 
-            @Parameter(description = "User ID", required = true)
+    public ResponseEntity<?> getUserById(
+            @Parameter(description = "UUID del usuario a buscar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
             @PathVariable UUID idUser) {    
         try {
 
@@ -131,21 +147,25 @@ public class UserController {
         }
     }
 
-    @Operation(summary = "Update user ",
-               description = "Updates an existing user ")
+    @Operation(
+        summary = "Actualizar usuario existente",
+        description = "Modifica los datos de un usuario existente incluyendo nombre, email, rol y estado"
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User  updated successfully",
+        @ApiResponse(responseCode = "200", description = "Usuario actualizado exitosamente",
                 content = @Content(mediaType = "application/json",
                         schema = @Schema(implementation = UserModDTO.class))),
-        @ApiResponse(responseCode = "400", description = "Invalid input data",
+        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "404", description = "User not found",
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @PutMapping
     public ResponseEntity<?> modifyUser(
+        @Parameter(description = "Datos actualizados del usuario", required = true)
         @Valid @RequestBody UserModDTO userMod,
         BindingResult bindingResult){
             if (bindingResult.hasErrors()) {
@@ -171,18 +191,21 @@ public class UserController {
 
     }
 
-    @Operation(summary = "Delete user",
-               description = "Soft deletes a user by setting is_deleted to true")
+    @Operation(
+        summary = "Eliminar usuario (soft delete)",
+        description = "Elimina lógicamente un usuario estableciendo is_deleted=true. El usuario no se elimina físicamente de la base de datos."
+    )
     @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "User deleted successfully"),
-        @ApiResponse(responseCode = "404", description = "User  not found",
+        @ApiResponse(responseCode = "204", description = "Usuario eliminado exitosamente"),
+        @ApiResponse(responseCode = "404", description = "Usuario no encontrado",
                 content = @Content(mediaType = "application/json")),
-        @ApiResponse(responseCode = "500", description = "Internal server error",
+        @ApiResponse(responseCode = "401", description = "No autenticado"),
+        @ApiResponse(responseCode = "500", description = "Error interno del servidor",
                 content = @Content(mediaType = "application/json"))
     })
     @DeleteMapping("/{idUser}")
     public ResponseEntity<Object> deleteUserAnswer(
-            @Parameter(description = "User ID", required = true)
+            @Parameter(description = "UUID del usuario a eliminar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
             @PathVariable UUID idUser) {
 
         log.info("Request to delete User with ID: {}", idUser);

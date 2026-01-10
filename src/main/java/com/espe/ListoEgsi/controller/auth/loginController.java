@@ -76,7 +76,18 @@ public class loginController {
         )
     })
     @PostMapping
-    public ResponseEntity<?> login(@RequestBody LoginRequestDTO loginRequest) {
+    public ResponseEntity<?> login(
+            @Valid @RequestBody LoginRequestDTO loginRequest,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage()));
+
+            log.warn("Validation errors in login request: {}", errors);
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         try {
             // Llamamos al servicio que creamos antes
             Map<String, String> response = loginService.authenticate(loginRequest);
@@ -270,7 +281,18 @@ public class loginController {
         )
     })
     @PostMapping("/refresh")
-    public ResponseEntity<?> refreshToken(@RequestBody RefreshTokenRequestDTO request) {
+    public ResponseEntity<?> refreshToken(
+            @Valid @RequestBody RefreshTokenRequestDTO request,
+            BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            Map<String, String> errors = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(error ->
+                errors.put(error.getField(), error.getDefaultMessage()));
+
+            log.warn("Validation errors in refresh token request: {}", errors);
+            return ResponseEntity.badRequest().body(errors);
+        }
+
         try {
             Map<String, String> response = loginService.refreshToken(request.getToken());
             log.info("Token refreshed successfully for user: {}", response.get("username"));

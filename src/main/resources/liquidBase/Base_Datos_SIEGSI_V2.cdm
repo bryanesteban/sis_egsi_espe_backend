@@ -1171,7 +1171,7 @@ CheckModel=Yes
 SaveLinks=Yes
 NameToCode=No
 PreserveMode=Yes</a:ModelOptionsText>
-<a:RepositoryFilename>C:\Users\bryan\Documents\Tesis\app\sis_egsi_espe_backend\src\main\resources\liquidBase\Base_Datos_SIEGSI.cdm</a:RepositoryFilename>
+<a:RepositoryFilename>C:\Users\bryan\Documents\Tesis\app\sis_egsi_espe_backend\src\main\resources\liquidBase\Base_Datos_SIEGSI_V2.cdm</a:RepositoryFilename>
 <c:GeneratedModels>
 <o:Shortcut Id="o3">
 <a:ObjectID>73A283D3-E664-4285-8449-25B7C84B64C4</a:ObjectID>

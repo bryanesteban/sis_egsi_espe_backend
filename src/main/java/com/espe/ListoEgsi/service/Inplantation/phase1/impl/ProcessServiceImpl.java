@@ -67,18 +67,13 @@ public class ProcessServiceImpl implements ProcessService {
         ProcessEgsi existingProcess = processRepository.findById(processUpdate.getIdProcess())
                 .orElseThrow(() -> new RuntimeException("Process not found with ID: " + processUpdate.getIdProcess()));
 
-                if(processUpdate.getRelatedProgram() != null) existingProcess.setRelatedProgram(processUpdate.getRelatedProgram());
-                if(processUpdate.getProjectLeader() != null) existingProcess.setProjectLeader(processUpdate.getProjectLeader());
-                if(processUpdate.getDateBegin() != null) existingProcess.setDateBegin(processUpdate.getDateBegin());
-                if(processUpdate.getDateEnd() != null) existingProcess.setDateEnd(processUpdate.getDateEnd());
-                if(processUpdate.getProblem() != null) existingProcess.setProblem(processUpdate.getProblem());
-                if(processUpdate.getJustification() != null) existingProcess.setJustification(processUpdate.getJustification());
-                if(processUpdate.getProjectDescription() != null) existingProcess.setProjectDescription(processUpdate.getProjectDescription());
-                if(processUpdate.getBenefits() != null) existingProcess.setBenefits(processUpdate.getBenefits());
-                if(processUpdate.getGeneralObjective() != null) existingProcess.setGeneralObjective(processUpdate.getGeneralObjective());
-                if(processUpdate.getBeneficiaries() != null) existingProcess.setBeneficiaries(processUpdate.getBeneficiaries());
-                if(processUpdate.getImplementationPeriod() != null) existingProcess.setImplementationPeriod(processUpdate.getImplementationPeriod());
-                
+                if (processUpdate.getName() != null) existingProcess.setName(processUpdate.getName());
+                if (processUpdate.getDescription() != null) existingProcess.setDescription(processUpdate.getDescription());
+                if (processUpdate.getDateBegin() != null) existingProcess.setDateBegin(processUpdate.getDateBegin());
+                if (processUpdate.getDateEnd() != null) existingProcess.setDateEnd(processUpdate.getDateEnd());
+                if (processUpdate.getActive() != null) existingProcess.setActive(processUpdate.getActive());
+                if (processUpdate.getCurrentPhase() != null) existingProcess.setCurrentPhase(processUpdate.getCurrentPhase());
+
                 processModified = processRepository.save(existingProcess);
                 log.info("Process with ID: {} has been updated.", processModified.getIdProcess());
 
