@@ -400,7 +400,9 @@ alter table SECURITY_POLICIES add constraint FK_RELATIONSHIP_7 foreign key (ID_P
 
 /**
 *  Initial Data for table USERS
+*  Username: cDaroma
+*  Password: password (BCrypt hash)
 */
-INSERT INTO users (id_user, name, lastname, ci, username, password, rol, is_deleted) VALUES (UUID(), 'Carlos', 'Daroma', '123215432', 'cDaroma', '$2a$10$50Go6KJ3Fxu5gS6dUecWpeq/qCW3K1N/XP4pRv4rT6iK6wSogDBFq', 'ADMIN', 0);
+INSERT INTO users (id_user, name, lastname, ci, username, password, rol, is_deleted) VALUES (UUID(), 'Carlos', 'Daroma', '123215432', 'cDaroma', '$2a$10$vdKkWcsR65dXjN.bOk/mnu1vSxX6axWXLXr/dP0fOF4gcCQQwSkFu', 'ADMIN', 0);
 
 

@@ -12,5 +12,6 @@ public interface LoginService  {
     Map<String, String> authenticate(LoginRequestDTO loginRequest);
     UserDTO changeUsername(ChangeUsernameDTO changeUsernameDTO);
     UserDTO changePassword(ChangePasswordDTO changePasswordDTO);
+    Map<String, String> refreshToken(String token);
 
 }

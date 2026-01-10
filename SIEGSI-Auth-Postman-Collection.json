@@ -1,0 +1,439 @@
+{
+	"info": {
+		"_postman_id": "siegsi-auth-collection",
+		"name": "SIEGSI - Autenticación",
+		"description": "Colección de Postman para probar los endpoints de autenticación del sistema SIEGSI.\n\n## Instrucciones de uso:\n1. Ejecuta el endpoint de **Login** primero\n2. El token se guardará automáticamente en la variable `jwt_token`\n3. Los demás endpoints usarán ese token automáticamente\n4. Para renovar el token, usa el endpoint **Refresh Token**",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Guardar el token automáticamente",
+							"if (pm.response.code === 200) {",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"jwt_token\", jsonData.token);",
+							"    pm.environment.set(\"username\", jsonData.username);",
+							"    pm.environment.set(\"rolename\", jsonData.rolename);",
+							"    console.log(\"✅ Token guardado exitosamente\");",
+							"    console.log(\"Usuario: \" + jsonData.username);",
+							"    console.log(\"Rol: \" + jsonData.rolename);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login"
+					]
+				},
+				"description": "Autentica un usuario y devuelve un token JWT válido por 24 horas.\n\nEl token se guarda automáticamente en la variable `jwt_token` para ser usado en las siguientes peticiones.\n\n**Ejemplo de respuesta exitosa:**\n```json\n{\n  \"username\": \"admin\",\n  \"rolename\": \"ADMIN\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\"\n}\n```"
+			},
+			"response": [
+				{
+					"name": "Login Exitoso",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n  \"username\": \"admin\",\n  \"rolename\": \"ADMIN\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYwOTQ1OTIwMCwiZXhwIjoxNjA5NTQ1NjAwfQ.abc123...\"\n}"
+				},
+				{
+					"name": "Credenciales Inválidas",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"admin\",\n  \"password\": \"wrong_password\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n  \"error\": \"Credenciales inválidas\",\n  \"mensaje\": \"Clave incorrecta\"\n}"
+				}
+			]
+		},
+		{
+			"name": "2. Refresh Token",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// Actualizar el token automáticamente",
+							"if (pm.response.code === 200) {",
+							"    var jsonData = pm.response.json();",
+							"    pm.environment.set(\"jwt_token\", jsonData.token);",
+							"    console.log(\"✅ Token renovado exitosamente\");",
+							"    console.log(\"Usuario: \" + jsonData.username);",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"// Verificar que existe un token",
+							"var token = pm.environment.get(\"jwt_token\");",
+							"if (!token) {",
+							"    console.log(\"⚠️ No hay token guardado. Ejecuta primero el endpoint de Login.\");",
+							"}"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"token\": \"{{jwt_token}}\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login/refresh",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login",
+						"refresh"
+					]
+				},
+				"description": "Renueva un token JWT existente sin necesidad de volver a autenticarse.\n\nEl token actual debe estar válido (no expirado) para poder ser renovado.\n\nEl nuevo token se guarda automáticamente reemplazando el anterior.\n\n**Ejemplo de respuesta exitosa:**\n```json\n{\n  \"username\": \"admin\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...\",\n  \"message\": \"Token renovado exitosamente\"\n}\n```"
+			},
+			"response": [
+				{
+					"name": "Token Renovado",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYwOTQ1OTIwMCwiZXhwIjoxNjA5NTQ1NjAwfQ.abc123...\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/login/refresh",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"login",
+								"refresh"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n  \"username\": \"admin\",\n  \"token\": \"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJhZG1pbiIsImlhdCI6MTYwOTQ1OTMwMCwiZXhwIjoxNjA5NTQ1NzAwfQ.xyz789...\",\n  \"message\": \"Token renovado exitosamente\"\n}"
+				},
+				{
+					"name": "Token Inválido",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"token\": \"token_invalido\"\n}"
+						},
+						"url": {
+							"raw": "http://localhost:9090/login/refresh",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"login",
+								"refresh"
+							]
+						}
+					},
+					"status": "Unauthorized",
+					"code": 401,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n  \"error\": \"Token inválido o expirado\",\n  \"mensaje\": \"JWT strings must contain exactly 2 period characters\"\n}"
+				}
+			]
+		},
+		{
+			"name": "3. Cambiar Nombre de Usuario",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"usernameOld\": \"admin\",\n  \"usernameNew\": \"adminNew\",\n  \"password\": \"password123\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login/changeUsername",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login",
+						"changeUsername"
+					]
+				},
+				"description": "Cambia el nombre de usuario. Requiere autenticación JWT.\n\nEl nuevo nombre debe ser diferente al actual y se requiere la contraseña para confirmar."
+			},
+			"response": []
+		},
+		{
+			"name": "4. Cambiar Contraseña",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{jwt_token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n  \"username\": \"admin\",\n  \"passwordOld\": \"password123\",\n  \"passwordNew\": \"newPassword456\"\n}"
+				},
+				"url": {
+					"raw": "{{base_url}}/login/changePassword",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"login",
+						"changePassword"
+					]
+				},
+				"description": "Cambia la contraseña del usuario. Requiere autenticación JWT.\n\nLa nueva contraseña debe ser diferente a la actual."
+			},
+			"response": []
+		},
+		{
+			"name": "5. Health Check",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/actuator/health",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"actuator",
+						"health"
+					]
+				},
+				"description": "Verifica el estado del servicio.\n\nNo requiere autenticación."
+			},
+			"response": [
+				{
+					"name": "Service UP",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:9090/actuator/health",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "9090",
+							"path": [
+								"actuator",
+								"health"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json"
+						}
+					],
+					"body": "{\n  \"status\": \"UP\"\n}"
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:9090",
+			"type": "string"
+		},
+		{
+			"key": "jwt_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "username",
+			"value": "cDaroma",
+			"type": "string"
+		},
+		{
+			"key": "password",
+			"value": "password",
+			"type": "string"
+		},
+		{
+			"key": "rolename",
+			"value": "",
+			"type": "string"
+		}
+	]
+}

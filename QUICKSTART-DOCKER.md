@@ -62,13 +62,28 @@ docker-compose exec mysql-db mysql -u usuario -psa12345 db_egsi
 
 ## 🧪 Probar API
 
+### Credenciales de Administrador
+- **Usuario**: `cDaroma`
+- **Contraseña**: `password`
+- **Rol**: `ADMIN`
+
+### Test de Login
 ```bash
-# Test de login
 curl -X POST http://localhost:9090/login \
   -H "Content-Type: application/json" \
   -d '{
-    "username": "admin",
+    "username": "cDaroma",
     "password": "password"
+  }'
+```
+
+### Test de Refresh Token
+```bash
+# Primero obtén el token del login, luego:
+curl -X POST http://localhost:9090/login/refresh \
+  -H "Content-Type: application/json" \
+  -d '{
+    "token": "TU_TOKEN_JWT_AQUI"
   }'
 ```
 

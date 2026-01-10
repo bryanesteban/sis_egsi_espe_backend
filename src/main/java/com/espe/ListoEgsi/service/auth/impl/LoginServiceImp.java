@@ -88,12 +88,27 @@ public class LoginServiceImp implements LoginService {
         
     }
 
-    
-
-
-
-
-
-
-
+    public Map<String, String> refreshToken(String token) {
+        try {
+            // Extraer el username del token actual
+            String username = jwtUtil.extractUsername(token);
+            
+            // Verificar que el usuario existe
+            User user = userRepository.findByUsername(username)
+                    .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+            
+            // Generar un nuevo token
+            String newToken = jwtUtil.generateToken(user.getUsername());
+            
+            Map<String, String> response = new HashMap<>();
+            response.put("username", user.getUsername());
+            response.put("token", newToken);
+            response.put("message", "Token renovado exitosamente");
+            
+            return response;
+            
+        } catch (Exception e) {
+            throw new RuntimeException("Error al renovar el token: " + e.getMessage());
+        }
+    }
 }

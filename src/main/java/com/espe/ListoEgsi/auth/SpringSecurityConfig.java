@@ -49,9 +49,11 @@ public class SpringSecurityConfig {
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             // 2. Autorizar las rutas
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.POST,"/login").permitAll()
+                .requestMatchers(HttpMethod.POST,"/login", "/login/refresh").permitAll()
+                .requestMatchers("/hash/**").permitAll() // Temporal para generar hashes
                 .requestMatchers("/actuator/health", "/actuator/health/**").permitAll()
                 .requestMatchers("/actuator/**").authenticated()
+                .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html").permitAll()
                 .requestMatchers("/users/**").authenticated()
                 .anyRequest().authenticated()            
             )
