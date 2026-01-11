@@ -2,8 +2,6 @@ package com.espe.ListoEgsi.domain.dto.Implantation.phase1;
 
 import java.util.UUID;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,29 +14,12 @@ import lombok.NoArgsConstructor;
 public class ProcessEgsiDTO {
 
     private UUID idProcess;
-
-    @NotBlank
-    @Size(max = 50)
     private String name;
-
-    @NotBlank
-    @Size(max = 1000)
     private String description;
-
-    @NotBlank
-    @Size(max = 20)
     private String dateBegin;
-
-    @NotBlank
-    @Size(max = 20)
     private String dateEnd;
-
-    @NotBlank
-    @Size(max = 20)
     private String active;
-
-    @NotBlank
-    @Size(max = 10)
     private String currentPhase;
+    private String createdBy;
 }
 

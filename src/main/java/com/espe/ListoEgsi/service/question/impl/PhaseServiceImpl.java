@@ -1,18 +1,22 @@
 package com.espe.ListoEgsi.service.question.impl;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.espe.ListoEgsi.domain.dto.question.PhaseDTO;
+import com.espe.ListoEgsi.domain.model.entity.Inplantation.phase1.ProcessEgsi;
 import com.espe.ListoEgsi.domain.model.entity.question.Phase;
 import com.espe.ListoEgsi.exception.ResourceNotFoundException;
 import com.espe.ListoEgsi.mapper.PhaseMapper;
 import com.espe.ListoEgsi.repository.question.PhaseRepository;
 import com.espe.ListoEgsi.service.question.PhaseService;
+import com.espe.ListoEgsi.repository.Inplantation.phase1.ProcessRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -20,14 +24,24 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PhaseServiceImpl implements PhaseService {
 
-    private final PhaseRepository phaseRepository;
-    private final PhaseMapper phaseMapper;
+    @Autowired
+    PhaseRepository phaseRepository;
+
+    @Autowired
+    PhaseMapper phaseMapper;
+
+    @Autowired
+    ProcessRepository processRepository;
+
 
     @Override
     @Transactional
     public PhaseDTO createPhase(PhaseDTO phaseDTO) {
-        Phase phase = phaseMapper.toEntity(phaseDTO);
-        Phase savedPhase = phaseRepository.save(phase);
+        Phase phaseCustom = phaseMapper.toEntity(phaseDTO);
+        ProcessEgsi process = processRepository.findById(phaseDTO.getIdProcess())
+                .orElseThrow(() -> new ResourceNotFoundException("Process not found with id: " + phaseDTO.getIdProcess()));
+        phaseCustom.setProcess(process);
+        Phase savedPhase = phaseRepository.save(phaseCustom);
         return phaseMapper.toDTO(savedPhase);
     }
 

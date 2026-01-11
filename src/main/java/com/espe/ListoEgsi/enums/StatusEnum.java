@@ -1,7 +1,7 @@
 package com.espe.ListoEgsi.enums;
 
 
-public enum StatesEnum {
+public enum StatusEnum {
     ACTIVE("ACTIVE", "the process is active"),
     INACTIVE("INACTIVE", "the process is inactive"),
     DELETED("DELETED", "the process is deleted"),
@@ -11,7 +11,7 @@ public enum StatesEnum {
     private final String stateName;
     private final String description;
 
-    StatesEnum(String stateName, String description) {
+    StatusEnum(String stateName, String description) {
         this.stateName = stateName;
         this.description = description;
     }

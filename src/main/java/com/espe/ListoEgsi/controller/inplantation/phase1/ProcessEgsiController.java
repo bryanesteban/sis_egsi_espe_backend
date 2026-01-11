@@ -1,5 +1,6 @@
 package com.espe.ListoEgsi.controller.inplantation.phase1;
 
+import java.io.ObjectInputFilter.Status;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +20,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.espe.ListoEgsi.domain.dto.Implantation.phase1.ProcessEgsiDTO;
+import com.espe.ListoEgsi.domain.dto.question.AnswerDTO;
+import com.espe.ListoEgsi.domain.dto.question.PhaseDTO;
+import com.espe.ListoEgsi.domain.model.entity.question.Answer;
+import com.espe.ListoEgsi.enums.PhaseEnum;
+import com.espe.ListoEgsi.enums.StatusEnum;
 import com.espe.ListoEgsi.service.Inplantation.phase1.ProcessService;
+import com.espe.ListoEgsi.service.question.AnswerService;
+import com.espe.ListoEgsi.service.question.PhaseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -39,6 +47,12 @@ public class ProcessEgsiController {
 
     @Autowired
     private ProcessService processService;
+
+    @Autowired
+    private PhaseService phaseService;
+
+    @Autowired
+    private AnswerService answerService;
 
     /**
      * Get all available processes
@@ -93,7 +107,7 @@ public class ProcessEgsiController {
                 content = @Content(mediaType = "application/json"))
     })
     @PostMapping
-    public ResponseEntity<Object> saveNewProcess(
+    public ResponseEntity<?> saveNewProcess(
         @Parameter(description = "Datos del nuevo proceso EGSI", required = true)
         @Valid @RequestBody ProcessEgsiDTO processSave,
         BindingResult bindingResult) {
@@ -110,7 +124,22 @@ public class ProcessEgsiController {
         try {
             ProcessEgsiDTO savedProcess = processService.saveProcess(processSave);
             log.info("Successfully submitted process with ID: {}", savedProcess.getIdProcess());
-            return ResponseEntity.status(HttpStatus.CREATED).body(savedProcess);
+            PhaseDTO  phaseforCreate =  PhaseDTO.builder()
+                                                    .idProcess(savedProcess.getIdProcess())
+                                                    .questionaryCode(PhaseEnum.FASE1.getQuestionnaireCode())
+                                                    .responsibles(processSave.getCreatedBy())
+                                                    .status(StatusEnum.ACTIVE.name())
+                                                    .build();
+            PhaseDTO initialPhase = phaseService.createPhase(phaseforCreate);
+            log.info("Initial phase created for process ID: {}", savedProcess.getIdProcess());
+
+            List<AnswerDTO> initialAnswers = answerService.createAnswersByPhase(initialPhase.getIdPhase(), PhaseEnum.FASE1.getQuestionnaireCode());
+            log.info("Initial answers created for phase ID: {}", initialPhase.getIdPhase());
+            Map<String, Object> response = new HashMap<>();
+            response.put("process", savedProcess);
+            response.put("initialPhase", initialPhase);
+            response.put("initialAnswersCount", initialAnswers.size());
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             log.error("Error submitting process with ID: {}", processSave.getIdProcess(), e);
             Map<String, String> error = new HashMap<>();

@@ -20,4 +20,6 @@ public interface AnswerService {
     List<AnswerDTO> getAnswersByPhase(UUID idPhase);
     
     List<AnswerDTO> getAnswersByQuestion(Integer idQuestion);
+
+    List<AnswerDTO> createAnswersByPhase(UUID idPhase, String idQuestionary);
 }
