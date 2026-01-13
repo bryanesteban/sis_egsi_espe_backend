@@ -3,6 +3,7 @@ package com.espe.ListoEgsi.service.question.impl;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,39 +20,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class QuestionaryServiceImpl implements QuestionaryService {
 
-    private final QuestionaryRepository questionaryRepository;
-    private final QuestionaryMapper questionaryMapper;
-
-    @Override
-    @Transactional
-    public QuestionaryDTO createQuestionary(QuestionaryDTO questionaryDTO) {
-        Questionary questionary = questionaryMapper.toEntity(questionaryDTO);
-        Questionary savedQuestionary = questionaryRepository.save(questionary);
-        return questionaryMapper.toDTO(savedQuestionary);
-    }
-
-    @Override
-    @Transactional
-    public QuestionaryDTO updateQuestionary(String id, QuestionaryDTO questionaryDTO) {
-        Questionary existingQuestionary = questionaryRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Questionary not found with id: " + id));
-        
-        existingQuestionary.setQuestionaryName(questionaryDTO.getQuestionaryName());
-        existingQuestionary.setDescription(questionaryDTO.getDescription());
-        existingQuestionary.setPhase(questionaryDTO.getPhase());
-        
-        Questionary updatedQuestionary = questionaryRepository.save(existingQuestionary);
-        return questionaryMapper.toDTO(updatedQuestionary);
-    }
-
-    @Override
-    @Transactional
-    public void deleteQuestionary(String id) {
-        if (!questionaryRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Questionary not found with id: " + id);
-        }
-        questionaryRepository.deleteById(id);
-    }
+    @Autowired
+    QuestionaryRepository questionaryRepository;
+    @Autowired
+    QuestionaryMapper questionaryMapper;
 
     @Override
     @Transactional(readOnly = true)

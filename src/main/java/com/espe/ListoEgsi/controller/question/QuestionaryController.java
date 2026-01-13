@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -37,81 +38,9 @@ import lombok.extern.slf4j.Slf4j;
 @SecurityRequirement(name = "bearerAuth")
 public class QuestionaryController {
 
-    private final QuestionaryService questionaryService;
+    @Autowired
+    QuestionaryService questionaryService;
 
-    @PostMapping
-    @Operation(
-        summary = "Crear un nuevo cuestionario",
-        description = "Registra una nueva plantilla de cuestionario EGSI con nombre, tipo y descripción"
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Cuestionario creado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
-    })
-    public ResponseEntity<?> createQuestionary(
-            @Parameter(description = "Datos del nuevo cuestionario", required = true)
-            @Valid @RequestBody QuestionaryDTO questionaryDTO,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-
-            log.warn("Validation errors in create questionary request: {}", errors);
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        QuestionaryDTO createdQuestionary = questionaryService.createQuestionary(questionaryDTO);
-        return new ResponseEntity<>(createdQuestionary, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    @Operation(
-        summary = "Actualizar un cuestionario existente",
-        description = "Modifica el nombre, tipo o descripción de un cuestionario existente"
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Cuestionario actualizado exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
-        @ApiResponse(responseCode = "404", description = "Cuestionario no encontrado"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
-    })
-    public ResponseEntity<?> updateQuestionary(
-            @Parameter(description = "ID del cuestionario a actualizar", required = true, example = "CUEST001")
-            @PathVariable String id,
-            @Parameter(description = "Datos actualizados del cuestionario", required = true)
-            @Valid @RequestBody QuestionaryDTO questionaryDTO,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-
-            log.warn("Validation errors in update questionary request: {}", errors);
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        QuestionaryDTO updatedQuestionary = questionaryService.updateQuestionary(id, questionaryDTO);
-        return ResponseEntity.ok(updatedQuestionary);
-    }
-
-    @DeleteMapping("/{id}")
-    @Operation(
-        summary = "Eliminar un cuestionario",
-        description = "Elimina permanentemente un cuestionario del sistema. Esta acción no se puede deshacer."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Cuestionario eliminado exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Cuestionario no encontrado"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
-    })
-    public ResponseEntity<Void> deleteQuestionary(
-            @Parameter(description = "ID del cuestionario a eliminar", required = true, example = "CUEST001")
-            @PathVariable String id) {
-        questionaryService.deleteQuestionary(id);
-        return ResponseEntity.noContent().build();
-    }
 
     @GetMapping("/{id}")
     @Operation(
