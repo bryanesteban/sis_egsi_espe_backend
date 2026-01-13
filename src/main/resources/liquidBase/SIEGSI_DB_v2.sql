@@ -1,6 +1,6 @@
 /*==============================================================*/
 /* DBMS name:      MySQL 5.0                                    */
-/* Created on:     10/1/2026 11:28:42                           */
+/* Created on:     12/1/2026 20:30:08                           */
 /*==============================================================*/
 
 
@@ -57,7 +57,7 @@ create table PROCESS
    DESCRIPTION          varchar(1000) not null,
    DATE_BEGIN           varchar(20) not null,
    DATE_END             varchar(20) not null,
-   STATUS               varchar(20) not null,
+   STATUS               varchar(50) not null,
    CURRENT_PHASE        varchar(20) not null,
    primary key (ID_PROCESS)
 );
@@ -132,36 +132,3 @@ alter table QUESTION add constraint FK_RELATIONSHIP_2 foreign key (ID_QUESTIONAR
 alter table RESPONSIBLES_SIGNING add constraint FK_RELATIONSHIP_6 foreign key (ID_PHASE)
       references PHASE_CUSTOM (ID_PHASE) on delete restrict on update restrict;
 
-
-/*==============================================================*/
-/* INSERT DATA                                                  */
-/*==============================================================*/
-
--- Cuestionario PERFIL
-INSERT INTO QUESTIONARY (ID_QUESTIONARY, QUESTIONARY_NAME, DESCRIPTION, PHASE) 
-VALUES ('CUEST001', 'PERFIL', 'DATOS INICIALES DEL PROYECTO', 'FASE1');
-
--- Preguntas del cuestionario PERFIL
-INSERT INTO QUESTION (ID_QUESTION, ID_QUESTIONARY, DESCRIPTION, QUESTION_TYPE, QUESTION_JSON) 
-VALUES 
-    (1, 'CUEST001', '1. NOMBRE DEL PROYECTO:', 'TEXTO', ''),
-    (2, 'CUEST001', 'Implementación del Esquema Gubernamental de Seguridad de la información (EGSI V3)', 'TITULO', ''),
-    (3, 'CUEST001', 'Programa relacionado:', 'TEXTO', ''),
-    (4, 'CUEST001', 'Líder del Proyecto', 'TEXTO', ''),
-    (5, 'CUEST001', 'Fecha de Inicio:', 'DATE', ''),
-    (6, 'CUEST001', 'Fecha de Fin:', 'DATE', ''),
-    (7, 'CUEST001', '2. CONTEXTUALIZACIÓN DEL PROYECTO', 'TITULO', ''),
-    (8, 'CUEST001', 'a) Problema:', 'TEXTO', ''),
-    (9, 'CUEST001', 'b) Justificación:', 'TEXTO', ''),
-    (10, 'CUEST001', '3. OBJETIVOS', 'TITULO', ''),
-    (11, 'CUEST001', 'a) Objetivo general:', 'TEXTO', ''),
-    (12, 'CUEST001', 'b) Beneficiarios', 'TEXTO', ''),
-    (13, 'CUEST001', 'c) Plazo de ejecución', 'TEXTO', ''),
-    (14, 'CUEST001', 'd) Cronograma de Ejecución – Actividades', 'TITULO', ''),
-    (15, 'CUEST001', 'e) Hitos de control', 'TABLA', '[{"title":"Hitos de control","Type":"TEXTO"},{"title":"Fecha comprometida","Type":"DATE"},{"title":"Fecha estimada","Type":"DATE"},{"title":"% de avance físico","Type":"TEXTO"}]');
-
--- Usuario inicial de prueba
--- Username: mdavalos
--- Password: password (BCrypt hash)
-INSERT INTO USERS (ID_USER, NAME, LASTNAME, CI, USERNAME, PASSWORD, ROL, IS_DELETED) 
-VALUES (UUID(), 'Carlos', 'mateo', '123215432', 'mdavalos', '$2a$10$vdKkWcsR65dXjN.bOk/mnu1vSxX6axWXLXr/dP0fOF4gcCQQwSkFu', 'ADMIN', 0);

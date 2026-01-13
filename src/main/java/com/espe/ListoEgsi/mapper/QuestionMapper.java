@@ -10,8 +10,6 @@ import com.espe.ListoEgsi.domain.model.entity.question.Question;
 @Mapper(componentModel = "spring")
 public interface QuestionMapper {
 
-    QuestionMapper INSTANCE = Mappers.getMapper(QuestionMapper.class);
-
     @Mapping(source = "questionary.idQuestionary", target = "idQuestionary")
     QuestionDTO toDTO(Question question);
 

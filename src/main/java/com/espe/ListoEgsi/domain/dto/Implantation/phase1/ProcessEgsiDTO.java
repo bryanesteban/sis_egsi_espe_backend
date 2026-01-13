@@ -18,8 +18,8 @@ public class ProcessEgsiDTO {
     private String description;
     private String dateBegin;
     private String dateEnd;
-    private String active;
-    private String currentPhase;
-    private String createdBy;
+    private String status;
+    private String customPhase;
+    private String userCreator;
 }
 

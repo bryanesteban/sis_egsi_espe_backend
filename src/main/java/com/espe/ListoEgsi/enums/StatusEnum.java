@@ -5,8 +5,8 @@ public enum StatusEnum {
     ACTIVE("ACTIVE", "the process is active"),
     INACTIVE("INACTIVE", "the process is inactive"),
     DELETED("DELETED", "the process is deleted"),
-    BLOCKED("BLOCKED", "the process is blocked"),
-    COMPLETED("COMPLETED", "the process is completed");
+    FINISHED("FINISHED", "the process is finished"),
+    PROCESSING("PROCESSING", "the process is in processing");
 
     private final String stateName;
     private final String description;

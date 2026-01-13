@@ -5,7 +5,12 @@ import java.util.UUID;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
@@ -49,10 +54,11 @@ public class ProcessEgsi {
 
     @NotBlank
     @Size(max = 20)
-    @Column(name = "ACTIVE", nullable = false)
-    private String active;
+    @Column(name = "STATUS", nullable = false)
+    private String status;
 
-    @Size(max = 10)
-    @Column(name = "CURRENT_PHASE")
-    private String currentPhase;
+    @NotBlank
+    @Size(max = 20)
+    @Column(name = "CURRENT_PHASE", nullable = false)
+    private String customPhase;
 }

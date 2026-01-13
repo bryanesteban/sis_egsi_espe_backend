@@ -120,25 +120,30 @@ public class ProcessEgsiController {
             log.warn("Validation errors in submit process request: {}", errors);
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errors);
         }
-
+        System.out.println("Proceso a guardar: " + processSave);
         try {
+            
             ProcessEgsiDTO savedProcess = processService.saveProcess(processSave);
             log.info("Successfully submitted process with ID: {}", savedProcess.getIdProcess());
-            PhaseDTO  phaseforCreate =  PhaseDTO.builder()
-                                                    .idProcess(savedProcess.getIdProcess())
-                                                    .questionaryCode(PhaseEnum.FASE1.getQuestionnaireCode())
-                                                    .responsibles(processSave.getCreatedBy())
-                                                    .status(StatusEnum.ACTIVE.name())
-                                                    .build();
-            PhaseDTO initialPhase = phaseService.createPhase(phaseforCreate);
+            
+            PhaseDTO initialPhase = PhaseDTO.builder()
+                                        .idProcess(savedProcess.getIdProcess())
+                                        .questionaryCode(PhaseEnum.FASE1.getQuestionnaireCode())
+                                        .responsibles(processSave.getUserCreator())
+                                        .status(StatusEnum.ACTIVE.getStateName())
+                                        .build();
+           PhaseDTO savedPhase = phaseService.createPhase(initialPhase);
             log.info("Initial phase created for process ID: {}", savedProcess.getIdProcess());
 
-            List<AnswerDTO> initialAnswers = answerService.createAnswersByPhase(initialPhase.getIdPhase(), PhaseEnum.FASE1.getQuestionnaireCode());
-            log.info("Initial answers created for phase ID: {}", initialPhase.getIdPhase());
+            List<AnswerDTO> questionCreated  = answerService.createAnswersByPhase(savedPhase.getIdPhase(), savedPhase.getQuestionaryCode());
+            log.info("Initial answers created for phase ID: {}", savedPhase.getIdPhase());
+
+
             Map<String, Object> response = new HashMap<>();
-            response.put("process", savedProcess);
-            response.put("initialPhase", initialPhase);
-            response.put("initialAnswersCount", initialAnswers.size());
+            response.put("processCreated", savedProcess);
+            response.put("phaseCreated", savedPhase);
+            response.put("answersCreated", questionCreated);
+
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
             log.error("Error submitting process with ID: {}", processSave.getIdProcess(), e);

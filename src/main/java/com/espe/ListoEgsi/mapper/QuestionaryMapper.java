@@ -9,7 +9,6 @@ import com.espe.ListoEgsi.domain.model.entity.question.Questionary;
 @Mapper(componentModel = "spring")
 public interface QuestionaryMapper {
 
-    QuestionaryMapper INSTANCE = Mappers.getMapper(QuestionaryMapper.class);
 
     QuestionaryDTO toDTO(Questionary questionary);
 

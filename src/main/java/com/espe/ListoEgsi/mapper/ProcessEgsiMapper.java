@@ -11,5 +11,7 @@ import com.espe.ListoEgsi.domain.model.entity.Inplantation.phase1.ProcessEgsi;
 public interface ProcessEgsiMapper {
 
     ProcessEgsiDTO toDTO(ProcessEgsi process);
+
+
     ProcessEgsi toEntity(ProcessEgsiDTO dto);
 }

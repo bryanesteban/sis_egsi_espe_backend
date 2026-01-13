@@ -16,7 +16,7 @@ services:
       # Persistencia de datos
       - mysql_data:/var/lib/mysql
       # Script de inicialización (se ejecuta solo la primera vez)
-      - ./src/main/resources/liquidBase/SIEGSI_DB_MYSQL.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./src/main/resources/liquidBase/v3/SIEGSI_DB.sql:/docker-entrypoint-initdb.d/init.sql
     networks:
       - siegsi-network
     healthcheck:

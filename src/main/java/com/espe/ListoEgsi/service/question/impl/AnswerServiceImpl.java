@@ -1,5 +1,6 @@
 package com.espe.ListoEgsi.service.question.impl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,6 +23,7 @@ import com.espe.ListoEgsi.repository.question.PhaseRepository;
 import com.espe.ListoEgsi.repository.question.QuestionRepository;
 import com.espe.ListoEgsi.repository.question.QuestionaryRepository;
 import com.espe.ListoEgsi.service.question.AnswerService;
+import com.espe.ListoEgsi.util.DateUtils;
 
 import lombok.RequiredArgsConstructor;
 
@@ -127,8 +129,9 @@ public class AnswerServiceImpl implements AnswerService {
                 answer.setAnswerText(""); // Respuesta vacía inicial
                 answer.setAnswerType(question.getQuestionType());
                 answer.setAnswerStatus(StatusEnum.ACTIVE.getStateName()); // o "NOT_ANSWERED"
-                answer.setCreatedAt(java.time.LocalDateTime.now().toString());
-                answer.setUpdatedAt(java.time.LocalDateTime.now().toString());
+                answer.setCreatedAt(DateUtils.getDateNow());
+                answer.setUpdatedAt(DateUtils.getDateNow());
+
                 return answer;
             })
             .collect(Collectors.toList());

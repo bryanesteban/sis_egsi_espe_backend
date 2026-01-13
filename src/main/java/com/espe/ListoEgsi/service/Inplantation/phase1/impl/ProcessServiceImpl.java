@@ -54,6 +54,8 @@ public class ProcessServiceImpl implements ProcessService {
 
     @Override
     public ProcessEgsiDTO saveProcess(ProcessEgsiDTO processSubmit) {
+        
+        
         ProcessEgsi process = processEgsiMapper.toEntity(processSubmit);
         ProcessEgsi savedProcess = processRepository.save(process);
         return processEgsiMapper.toDTO(savedProcess);
@@ -71,8 +73,8 @@ public class ProcessServiceImpl implements ProcessService {
                 if (processUpdate.getDescription() != null) existingProcess.setDescription(processUpdate.getDescription());
                 if (processUpdate.getDateBegin() != null) existingProcess.setDateBegin(processUpdate.getDateBegin());
                 if (processUpdate.getDateEnd() != null) existingProcess.setDateEnd(processUpdate.getDateEnd());
-                if (processUpdate.getActive() != null) existingProcess.setActive(processUpdate.getActive());
-                if (processUpdate.getCurrentPhase() != null) existingProcess.setCurrentPhase(processUpdate.getCurrentPhase());
+                if (processUpdate.getStatus() != null) existingProcess.setStatus(processUpdate.getStatus());
+                if (processUpdate.getCustomPhase() != null) existingProcess.setCustomPhase(processUpdate.getCustomPhase());
 
                 processModified = processRepository.save(existingProcess);
                 log.info("Process with ID: {} has been updated.", processModified.getIdProcess());
