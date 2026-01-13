@@ -47,25 +47,14 @@ public class PhaseServiceImpl implements PhaseService {
 
     @Override
     @Transactional
-    public PhaseDTO updatePhase(UUID id, PhaseDTO phaseDTO) {
+    public PhaseDTO updatePhase(UUID id, String status) {
         Phase existingPhase = phaseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Phase not found with id: " + id));
         
-        existingPhase.setQuestionaryCode(phaseDTO.getQuestionaryCode());
-        existingPhase.setResponsibles(phaseDTO.getResponsibles());
-        existingPhase.setStatus(phaseDTO.getStatus());
+        existingPhase.setStatus(status);
         
         Phase updatedPhase = phaseRepository.save(existingPhase);
         return phaseMapper.toDTO(updatedPhase);
-    }
-
-    @Override
-    @Transactional
-    public void deletePhase(UUID id) {
-        if (!phaseRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Phase not found with id: " + id);
-        }
-        phaseRepository.deleteById(id);
     }
 
     @Override

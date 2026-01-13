@@ -1,5 +1,6 @@
 package com.espe.ListoEgsi.service.question.impl;
 
+import java.io.ObjectInputFilter.Status;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -46,37 +47,22 @@ public class AnswerServiceImpl implements AnswerService {
     @Autowired
     QuestionaryRepository questionaryRepository;
 
-    @Override
-    @Transactional
-    public AnswerDTO createAnswer(AnswerDTO answerDTO) {
-        Answer answer = answerMapper.toEntity(answerDTO);
-        Answer savedAnswer = answerRepository.save(answer);
-        return answerMapper.toDTO(savedAnswer);
-    }
 
     @Override
     @Transactional
-    public AnswerDTO updateAnswer(UUID id, AnswerDTO answerDTO) {
-        Answer existingAnswer = answerRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Answer not found with id: " + id));
+    public AnswerDTO updateAnswer(AnswerDTO answerDTO) {
+
+        Answer existingAnswer = answerRepository.findById(answerDTO.getIdAnswer())
+                .orElseThrow(() -> new ResourceNotFoundException("Answer not found with id: " + answerDTO.getIdAnswer()));
         
         existingAnswer.setAnswerText(answerDTO.getAnswerText());
-        existingAnswer.setAnswerType(answerDTO.getAnswerType());
-        existingAnswer.setAnswerStatus(answerDTO.getAnswerStatus());
-        existingAnswer.setUpdatedAt(answerDTO.getUpdatedAt());
+        existingAnswer.setAnswerStatus(answerDTO.getAnswerText().trim() != "" ? StatusEnum.COMPLETED.getStateName() : StatusEnum.ACTIVE.getStateName());
+        existingAnswer.setUpdatedAt(DateUtils.getDateNow());
         
         Answer updatedAnswer = answerRepository.save(existingAnswer);
         return answerMapper.toDTO(updatedAnswer);
     }
-
-    @Override
-    @Transactional
-    public void deleteAnswer(UUID id) {
-        if (!answerRepository.existsById(id)) {
-            throw new ResourceNotFoundException("Answer not found with id: " + id);
-        }
-        answerRepository.deleteById(id);
-    }
+ 
 
     @Override
     @Transactional(readOnly = true)
@@ -113,6 +99,10 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public List<AnswerDTO> createAnswersByPhase(UUID idPhase, String idQuestionary) {
 
+    if(idPhase == null || idQuestionary == null || idQuestionary.isEmpty()) {
+        throw new IllegalArgumentException("Phase ID and Questionary ID cannot be null or empty");
+    }
+
     Phase phase = phaseRepository.findById(idPhase)
             .orElseThrow(() -> new ResourceNotFoundException("Phase not found with id: " + idPhase));
 
@@ -142,5 +132,13 @@ public class AnswerServiceImpl implements AnswerService {
     return savedAnswers.stream()
             .map(answerMapper::toDTO)
             .collect(Collectors.toList());
-}
+    }
+
+    @Override
+    public Boolean validateAnswersCompletedByPhase(UUID idPhase) {
+        return answerRepository.VerifyAnswersCompletedByPhase(idPhase);
+    }
+    
+
+    
 }

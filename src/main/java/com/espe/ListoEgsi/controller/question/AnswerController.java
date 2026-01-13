@@ -1,17 +1,21 @@
 package com.espe.ListoEgsi.controller.question;
 
+import java.io.ObjectInputFilter.Status;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import com.espe.ListoEgsi.domain.dto.question.AnswerDTO;
+import com.espe.ListoEgsi.enums.StatusEnum;
 import com.espe.ListoEgsi.service.question.AnswerService;
+import com.espe.ListoEgsi.service.question.PhaseService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -38,39 +42,17 @@ import lombok.extern.slf4j.Slf4j;
 @SecurityRequirement(name = "bearerAuth")
 public class AnswerController {
 
-    private final AnswerService answerService;
+    @Autowired
+    AnswerService answerService;
 
-    @PostMapping
-    @Operation(
-        summary = "Crear nueva respuesta",
-        description = "Registra una nueva respuesta a una pregunta de cuestionario en una fase específica"
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "201", description = "Respuesta creada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
-    })
-    public ResponseEntity<?> createAnswer(
-            @Parameter(description = "Datos de la nueva respuesta", required = true)
-            @Valid @RequestBody AnswerDTO answerDTO,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
+    @Autowired
+    PhaseService phaseService;
 
-            log.warn("Validation errors in create answer request: {}", errors);
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        AnswerDTO createdAnswer = answerService.createAnswer(answerDTO);
-        return new ResponseEntity<>(createdAnswer, HttpStatus.CREATED);
-    }
 
     @PutMapping("/{id}")
     @Operation(
-        summary = "Actualizar una respuesta existente",
-        description = "Modifica una respuesta previamente registrada incluyendo texto, archivos adjuntos y estado de aprobación"
+        summary = "Complentar una respuesta existente",
+        description = "Completa los detalles de una respuesta existente en el sistema"
     )
     @ApiResponses(value = {
         @ApiResponse(responseCode = "200", description = "Respuesta actualizada exitosamente"),
@@ -79,8 +61,6 @@ public class AnswerController {
         @ApiResponse(responseCode = "401", description = "No autenticado")
     })
     public ResponseEntity<?> updateAnswer(
-            @Parameter(description = "UUID de la respuesta a actualizar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable UUID id,
             @Parameter(description = "Datos actualizados de la respuesta", required = true)
             @Valid @RequestBody AnswerDTO answerDTO,
             BindingResult bindingResult) {
@@ -93,26 +73,16 @@ public class AnswerController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        AnswerDTO updatedAnswer = answerService.updateAnswer(id, answerDTO);
+        AnswerDTO updatedAnswer = answerService.updateAnswer(answerDTO);
+
+        phaseService.updatePhase(answerDTO.getIdPhase(), answerService.validateAnswersCompletedByPhase(answerDTO.getIdPhase()) 
+                                                        ? StatusEnum.COMPLETED.getStateName() 
+                                                        : StatusEnum.ACTIVE.getStateName());
+    
+            
         return ResponseEntity.ok(updatedAnswer);
     }
 
-    @DeleteMapping("/{id}")
-    @Operation(
-        summary = "Eliminar una respuesta",
-        description = "Elimina permanentemente una respuesta del sistema. Esta acción no se puede deshacer."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Respuesta eliminada exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Respuesta no encontrada"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
-    })
-    public ResponseEntity<Void> deleteAnswer(
-            @Parameter(description = "UUID de la respuesta a eliminar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable UUID id) {
-        answerService.deleteAnswer(id);
-        return ResponseEntity.noContent().build();
-    }
 
     @GetMapping("/{id}")
     @Operation(

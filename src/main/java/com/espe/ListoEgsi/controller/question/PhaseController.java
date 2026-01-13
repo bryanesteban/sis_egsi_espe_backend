@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -38,7 +39,8 @@ import lombok.extern.slf4j.Slf4j;
 @SecurityRequirement(name = "bearerAuth")
 public class PhaseController {
 
-    private final PhaseService phaseService;
+    @Autowired
+    PhaseService phaseService;
 
     @PostMapping
     @Operation(
@@ -65,53 +67,6 @@ public class PhaseController {
 
         PhaseDTO createdPhase = phaseService.createPhase(phaseDTO);
         return new ResponseEntity<>(createdPhase, HttpStatus.CREATED);
-    }
-
-    @PutMapping("/{id}")
-    @Operation(
-        summary = "Actualizar una fase existente",
-        description = "Modifica los datos de una fase de implementación existente incluyendo fechas, estado y cuestionarios asociados"
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "200", description = "Fase actualizada exitosamente"),
-        @ApiResponse(responseCode = "400", description = "Datos de entrada inválidos"),
-        @ApiResponse(responseCode = "404", description = "Fase no encontrada"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
-    })
-    public ResponseEntity<?> updatePhase(
-            @Parameter(description = "UUID de la fase a actualizar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable UUID id,
-            @Parameter(description = "Datos actualizados de la fase", required = true)
-            @Valid @RequestBody PhaseDTO phaseDTO,
-            BindingResult bindingResult) {
-        if (bindingResult.hasErrors()) {
-            Map<String, String> errors = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(error ->
-                errors.put(error.getField(), error.getDefaultMessage()));
-
-            log.warn("Validation errors in update phase request: {}", errors);
-            return ResponseEntity.badRequest().body(errors);
-        }
-
-        PhaseDTO updatedPhase = phaseService.updatePhase(id, phaseDTO);
-        return ResponseEntity.ok(updatedPhase);
-    }
-
-    @DeleteMapping("/{id}")
-    @Operation(
-        summary = "Eliminar una fase",
-        description = "Elimina permanentemente una fase del sistema. Esta acción no se puede deshacer."
-    )
-    @ApiResponses(value = {
-        @ApiResponse(responseCode = "204", description = "Fase eliminada exitosamente"),
-        @ApiResponse(responseCode = "404", description = "Fase no encontrada"),
-        @ApiResponse(responseCode = "401", description = "No autenticado")
-    })
-    public ResponseEntity<Void> deletePhase(
-            @Parameter(description = "UUID de la fase a eliminar", required = true, example = "550e8400-e29b-41d4-a716-446655440000")
-            @PathVariable UUID id) {
-        phaseService.deletePhase(id);
-        return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{id}")

@@ -6,12 +6,8 @@ import java.util.UUID;
 import com.espe.ListoEgsi.domain.dto.question.AnswerDTO;
 
 public interface AnswerService {
-    
-    AnswerDTO createAnswer(AnswerDTO answerDTO);
-    
-    AnswerDTO updateAnswer(UUID id, AnswerDTO answerDTO);
-    
-    void deleteAnswer(UUID id);
+
+    AnswerDTO updateAnswer(AnswerDTO answerDTO);
     
     AnswerDTO getAnswerById(UUID id);
     
@@ -22,4 +18,7 @@ public interface AnswerService {
     List<AnswerDTO> getAnswersByQuestion(Integer idQuestion);
 
     List<AnswerDTO> createAnswersByPhase(UUID idPhase, String idQuestionary);
+
+    Boolean validateAnswersCompletedByPhase(UUID idPhase);
+    
 }

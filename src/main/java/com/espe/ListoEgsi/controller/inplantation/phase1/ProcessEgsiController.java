@@ -135,14 +135,15 @@ public class ProcessEgsiController {
            PhaseDTO savedPhase = phaseService.createPhase(initialPhase);
             log.info("Initial phase created for process ID: {}", savedProcess.getIdProcess());
 
-            List<AnswerDTO> questionCreated  = answerService.createAnswersByPhase(savedPhase.getIdPhase(), savedPhase.getQuestionaryCode());
+            answerService.createAnswersByPhase(savedPhase.getIdPhase(), savedPhase.getQuestionaryCode());
             log.info("Initial answers created for phase ID: {}", savedPhase.getIdPhase());
 
+            
 
             Map<String, Object> response = new HashMap<>();
             response.put("processCreated", savedProcess);
             response.put("phaseCreated", savedPhase);
-            response.put("answersCreated", questionCreated);
+
 
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {

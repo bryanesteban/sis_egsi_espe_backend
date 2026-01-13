@@ -9,9 +9,7 @@ public interface PhaseService {
     
     PhaseDTO createPhase(PhaseDTO phaseDTO);
     
-    PhaseDTO updatePhase(UUID id, PhaseDTO phaseDTO);
-    
-    void deletePhase(UUID id);
+    PhaseDTO updatePhase(UUID id, String status);
     
     PhaseDTO getPhaseById(UUID id);
     
