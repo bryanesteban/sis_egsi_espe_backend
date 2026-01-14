@@ -19,6 +19,6 @@ public interface AnswerRepository extends JpaRepository<Answer, UUID> {
     
     List<Answer> findByPhase_IdPhaseAndQuestion_IdQuestion(UUID idPhase, Integer idQuestion);
 
-    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN false ELSE true END FROM Answers a WHERE a.phase.idPhase = :idPhase AND a.answerStatus <> 'COMPLETED'")
+    @Query("SELECT CASE WHEN COUNT(a) > 0 THEN false ELSE true END FROM Answer a WHERE a.phase.idPhase = :idPhase AND a.answerStatus <> 'COMPLETED'")
     Boolean VerifyAnswersCompletedByPhase(@Param("idPhase") UUID idPhase);
 }
