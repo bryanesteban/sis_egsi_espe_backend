@@ -118,19 +118,19 @@ create table USERS
 );
 
 alter table ANSWERS add constraint FK_RELATIONSHIP_3 foreign key (ID_QUESTION)
-      references QUESTION (ID_QUESTION) on delete restrict on update restrict;
+      references QUESTION (ID_QUESTION) on delete cascade on update cascade;
 
 alter table ANSWERS add constraint FK_RELATIONSHIP_5 foreign key (ID_PHASE)
-      references PHASE_CUSTOM (ID_PHASE) on delete restrict on update restrict;
+      references PHASE_CUSTOM (ID_PHASE) on delete cascade on update cascade;
 
 alter table PHASE_CUSTOM add constraint FK_RELATIONSHIP_4 foreign key (ID_PROCESS)
-      references PROCESS (ID_PROCESS) on delete restrict on update restrict;
+      references PROCESS (ID_PROCESS) on delete cascade on update cascade;
 
 alter table QUESTION add constraint FK_RELATIONSHIP_2 foreign key (ID_QUESTIONARY)
-      references QUESTIONARY (ID_QUESTIONARY) on delete restrict on update restrict;
+      references QUESTIONARY (ID_QUESTIONARY) on delete cascade on update cascade;
 
 alter table RESPONSIBLES_SIGNING add constraint FK_RELATIONSHIP_6 foreign key (ID_PHASE)
-      references PHASE_CUSTOM (ID_PHASE) on delete restrict on update restrict;
+      references PHASE_CUSTOM (ID_PHASE) on delete cascade on update cascade;
 
 
 /*==============================================================*/
