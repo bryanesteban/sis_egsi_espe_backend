@@ -37,6 +37,11 @@ public class EgsiAnswerServiceImpl implements EgsiAnswerService {
                 request.getIdProcess(), 
                 request.getIdPhase());
 
+        // Truncar username si es muy largo (máximo 255 caracteres)
+        String safeUsername = username != null && username.length() > 255 
+                ? username.substring(0, 255) 
+                : username;
+
         UUID processUUID = UUID.fromString(request.getIdProcess());
         ProcessEgsi process = processRepository.findById(processUUID)
                 .orElseThrow(() -> new RuntimeException("Proceso no encontrado: " + request.getIdProcess()));
@@ -75,9 +80,9 @@ public class EgsiAnswerServiceImpl implements EgsiAnswerService {
                 answer.setStatus(status);
 
                 if (isNew) {
-                    answer.setCreatedBy(username);
+                    answer.setCreatedBy(safeUsername);
                 }
-                answer.setUpdatedBy(username);
+                answer.setUpdatedBy(safeUsername);
 
                 EgsiAnswer savedAnswer = answerRepository.save(answer);
                 savedAnswers.add(convertToDTO(savedAnswer));

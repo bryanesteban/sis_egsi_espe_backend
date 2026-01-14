@@ -53,10 +53,10 @@ public class EgsiAnswer {
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 
-    @Column(name = "CREATED_BY", length = 100)
+    @Column(name = "CREATED_BY", length = 255)
     private String createdBy;
 
-    @Column(name = "UPDATED_BY", length = 100)
+    @Column(name = "UPDATED_BY", length = 255)
     private String updatedBy;
 
     @PrePersist
