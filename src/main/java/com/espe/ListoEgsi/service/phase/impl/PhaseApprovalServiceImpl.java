@@ -36,6 +36,11 @@ public class PhaseApprovalServiceImpl implements PhaseApprovalService {
     public PhaseApprovalDTO createApprovalRequest(CreateApprovalRequestDTO request) {
         log.info("Creating approval request for process {} phase {}", request.getIdProcess(), request.getIdPhase());
 
+        // Validar que idPhase no sea null o vacío
+        if (request.getIdPhase() == null || request.getIdPhase().trim().isEmpty()) {
+            throw new IllegalArgumentException("El ID de la fase es requerido");
+        }
+
         // Verificar si ya existe una solicitud pendiente
         if (approvalRepository.existsPendingByProcessAndPhase(request.getIdProcess(), request.getIdPhase())) {
             throw new IllegalStateException("Ya existe una solicitud de aprobación pendiente para esta fase");
